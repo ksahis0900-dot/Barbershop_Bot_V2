@@ -5,42 +5,40 @@ const moment = require('moment');
 
 // Configuration
 const TOKEN = process.env.BOT_TOKEN;
-const WEBHOOK_URL = process.env.WEBHOOK_URL; // Required for Vercel
+const WEBHOOK_URL = process.env.WEBHOOK_URL;
 const PORT = process.env.PORT || 3000;
 
 // Initialize bot
 let bot;
 
 if (!TOKEN) {
-    console.error('❌ CRITICAL ERROR: BOT_TOKEN is missing from environment variables!');
+    console.error('❌ CRITICAL ERROR: BOT_TOKEN is missing!');
 }
 
 if (process.env.VERCEL) {
-    // Serverless mode (Webhook)
     bot = new SafeBot(TOKEN || 'dummy');
-    // Webhook will be handled by the API route
 } else {
-    // Local mode (Polling)
     bot = new SafeBot(TOKEN, { polling: true });
-    console.log('🤖 Bot started in POLLING mode');
+    console.log('🤖 Bot started in POLLING mode (Version 1.5.0)');
 }
 
 // ====== HANDLERS ======
 
 bot.onText(/\/start/, async (msg) => {
     const chatId = msg.chat.id;
+    const settings = db.data.settings || {};
     const username = msg.from.username || msg.from.first_name;
-    console.log(`[/start] Received from ${username} (${chatId})`);
 
     const welcomeText = `
-👋 Привет, ${username}!
+💈 *${settings.name || 'Retro Barbershop'}*
+---
+Привет, *${username}*! Мы рады видеть тебя. 
 
-Добро пожаловать в *Retro Barbershop* 💈
+Запишись к нам через Мини-приложение — это быстро и удобно. Выбирай мастера, услуги и удобное время прямо сейчас!
 
-Теперь записаться стало еще проще! Нажмите кнопку ниже, чтобы открыть наше современное Мини-приложение и выбрать лучшие услуги в пару кликов.
-
-📍 Адрес: ул. Центральная, 123
-📞 Телефон: +7 (999) 123-45-67
+📍 *Адрес:* ${settings.address || 'ул. Центральная, 123'}
+📞 *Тел:* ${settings.phone || '+7 (999) 123-45-67'}
+⏰ *Работаем:* ${settings.working_hours?.start || '10:00'} - ${settings.working_hours?.end || '21:00'}
   `;
 
     const options = {
@@ -48,48 +46,51 @@ bot.onText(/\/start/, async (msg) => {
         reply_markup: {
             inline_keyboard: [
                 [{
-                    text: '🚀 ОТКРЫТЬ ЗАПИСЬ',
-                    web_app: { url: process.env.MINI_APP_URL || 'https://retro-barber-app.vercel.app' }
+                    text: '📅 ЗАПИСАТЬСЯ ОНЛАЙН',
+                    web_app: { url: process.env.MINI_APP_URL || 'https://barbershop-bot-v2.vercel.app' }
                 }],
-                [{ text: '📍 Контакты', callback_data: 'contacts' }]
+                [{ text: '⭐ Мои записи', callback_data: 'my_bookings' }]
             ]
         }
     };
 
     await bot.safeSendMessage(chatId, welcomeText, options);
-    console.log(`[/start] Response sent to ${chatId}`);
 });
 
-// Handle data from Web App
 bot.on('web_app_data', async (msg) => {
     const chatId = msg.chat.id;
     const data = JSON.parse(msg.web_app_data.data);
 
+    // Format date for display
+    const formattedDate = moment(data.date).format('D MMMM (dd)');
+
     const bookingText = `
-✨ *ЗАПЯВКА ИЗ ПРИЛОЖЕНИЯ* ✨
+✅ *ОТЛИЧНЫЙ ВЫБОР!*
+
+Вы почти записались:
+📅 *Когда:* ${formattedDate} в *${data.time}*
+👤 *Мастер:* ${data.master.name}
+⏳ *Длительность:* ~${data.duration} мин
 
 💇 *Услуги:*
-${data.services.map(s => `• ${s.name} (${s.price}₽)`).join('\n')}
+${data.services.map(s => `• ${s.name}`).join('\n')}
 
-👨‍💼 *Мастер:* ${data.master.name}
-💰 *Итого:* ${data.total}₽
+💰 *Итого к оплате:* ${data.total}₽
 
-Для завершения записи, пожалуйста, отправьте свой контакт:
+👇 *Для завершения, пожалуйста, подтвердите ваш номер телефона:*
   `;
 
     const options = {
         parse_mode: 'Markdown',
         reply_markup: {
-            keyboard: [[{ text: '📱 Поделиться контактом', request_contact: true }]],
+            keyboard: [[{ text: '📱 ПОДТВЕРДИТЬ НОМЕР', request_contact: true }]],
             resize_keyboard: true,
             one_time_keyboard: true
         }
     };
 
-    // Save partial booking to state
     db.setUserState(chatId, { step: 'awaiting_contact', booking: data });
-
-    bot.safeSendMessage(chatId, bookingText, options);
+    await bot.safeSendMessage(chatId, bookingText, options);
 });
 
 bot.on('contact', async (msg) => {
@@ -101,53 +102,65 @@ bot.on('contact', async (msg) => {
         const contact = msg.contact;
 
         const finalBooking = {
+            id: Date.now(),
+            telegramUserId: chatId,
             ...booking,
             clientName: contact.first_name + (contact.last_name ? ` ${contact.last_name}` : ''),
             clientPhone: contact.phone_number,
-            date: moment().format('YYYY-MM-DD'), // Default for now, can be picked in app
-            time: 'По согласованию',
             createdAt: new Date().toISOString()
         };
 
-        db.addBooking(finalBooking);
+        db.data.bookings.push(finalBooking);
+        db.save();
         db.clearUserState(chatId);
 
         const successText = `
-🎉 *СПАСИБО ЗА ЗАПИСЬ!* 🎉
+🎉 *ВЫ ЗАПИСАНЫ!*
 
-Ваши данные переданы мастеру *${booking.master.name}*.
-Он свяжется с вами в течение 15 минут для подтверждения времени.
+Ждем вас *${moment(booking.date).format('D MMMM')}* к *${booking.time}*.
+Мастер *${booking.master.name}* уже готовит инструменты! ✂️
 
-💈 До встречи в Retro!
-    `;
+Если ваши планы изменятся, пожалуйста, предупредите нас заранее.
+  `;
 
-        bot.safeSendMessage(chatId, successText, {
+        await bot.safeSendMessage(chatId, successText, {
             parse_mode: 'Markdown',
             reply_markup: { remove_keyboard: true }
         });
 
-        // Notify master if registered (similar to original logic)
-        // ... notifyMaster(booking.master, finalBooking);
+        // Notify master if they have a chatId registered
+        if (booking.master.chatId) {
+            const masterMsg = `
+🔔 *НОВАЯ ЗАПИСЬ!*
+---
+📅 ${moment(booking.date).format('D MMMM')} в ${booking.time}
+👤 Клиент: ${finalBooking.clientName}
+📞 Тел: ${finalBooking.clientPhone}
+💇 Услуги: ${booking.services.map(s => s.name).join(', ')}
+💰 Сумма: ${booking.total}₽
+            `;
+            await bot.safeSendMessage(booking.master.chatId, masterMsg, { parse_mode: 'Markdown' });
+        }
     }
 });
 
-// Callback handlers
-bot.on('callback_query', (query) => {
+bot.on('callback_query', async (query) => {
     const chatId = query.message.chat.id;
-    if (query.data === 'contacts') {
-        const text = `
-📍 *Retro Barbershop*
-🏠 Адрес: ул. Центральная, 123
-📞 +7 (999) 123-45-67
-🕐 10:00 - 20:00
-    `;
-        bot.safeSendMessage(chatId, text, { parse_mode: 'Markdown' });
+
+    if (query.data === 'my_bookings') {
+        const userBookings = db.data.bookings.filter(b => b.telegramUserId === chatId);
+
+        if (userBookings.length === 0) {
+            await bot.safeSendMessage(chatId, "🤷‍♂️ У вас пока нет активных записей.");
+        } else {
+            const text = `
+📜 *ВАШИ ЗАПИСИ:*
+${userBookings.map(b => `\n📅 *${moment(b.date).format('DD.MM')}* в *${b.time}*\n💈 Мастер: ${b.master.name}\n💰 ${b.total}₽`).join('\n---\n')}
+            `;
+            await bot.safeSendMessage(chatId, text, { parse_mode: 'Markdown' });
+        }
     }
     bot.safeAnswerCallbackQuery(query.id);
 });
 
-// Error logging
-bot.on('polling_error', (error) => console.error('Polling error:', error.message));
-bot.on('error', (error) => console.error('General error:', error.message));
-
-module.exports = bot; // Export for Vercel
+module.exports = bot;

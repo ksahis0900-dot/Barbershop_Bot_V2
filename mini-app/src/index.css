@@ -71,28 +71,29 @@ body {
 }
 
 .glass-card.selected {
-  border-color: var(--accent-gold);
   background: rgba(197, 166, 118, 0.1);
+  border-color: var(--accent-gold);
 }
 
 .btn-luxury {
   background: var(--gradient-gold);
-  color: #000;
-  border: none;
-  padding: 16px 32px;
-  border-radius: 18px;
-  font-weight: 700;
-  font-size: 16px;
-  letter-spacing: 1px;
+  color: #0c0d10;
+  border-radius: 16px;
+  padding: 16px 24px;
+  font-weight: 900;
+  font-size: 14px;
   text-transform: uppercase;
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  box-shadow: 0 10px 20px rgba(197, 166, 118, 0.2);
+  letter-spacing: 2px;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 20px rgba(197, 166, 118, 0.3);
+  border: none;
   width: 100%;
+  cursor: pointer;
 }
 
 .btn-luxury:active {
   transform: scale(0.96);
-  box-shadow: 0 5px 10px rgba(197, 166, 118, 0.2);
+  box-shadow: 0 4px 10px rgba(197, 166, 118, 0.2);
 }
 
 .sticky-footer {
@@ -102,7 +103,7 @@ body {
   right: 0;
   padding: 24px;
   background: linear-gradient(to top, var(--bg-color) 80%, transparent);
-  z-index: 1000;
+  z-index: 50;
 }
 
 .category-badge {

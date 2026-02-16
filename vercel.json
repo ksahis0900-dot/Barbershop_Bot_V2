@@ -1,13 +1,17 @@
 {
       "version": 2,
       "rewrites": [
-              {
-                        "source": "/api/bot",
-                        "destination": "/api/webhook.js"
-              },
-              {
-                        "source": "/(.*)",
-                        "destination": "/mini-app/dist/$1"
-              }
+            {
+                  "source": "/api/bot",
+                  "destination": "/api/webhook.js"
+            },
+            {
+                  "source": "/api/data",
+                  "destination": "/api/data.js"
+            },
+            {
+                  "source": "/(.*)",
+                  "destination": "/mini-app/dist/$1"
+            }
       ]
 }
