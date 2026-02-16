@@ -11,11 +11,11 @@
   "services": [
     {
       "id": 1,
-      "name": "Стрижка «Мужской стиль»",
+      "name": "Мужская стрижка",
       "price": 2000,
       "duration": 60,
       "icon": "✂️",
-      "description": "Классическая мужская стрижка ножницами и машинкой",
+      "description": "Классика и тренды в исполнении лучших мастеров",
       "photo": "/images/services/haircut.jpg"
     },
     {
@@ -24,62 +24,44 @@
       "price": 1200,
       "duration": 40,
       "icon": "🧔",
-      "description": "Придание формы бороде и уход за кожей лица",
+      "description": "Идеальные контуры и уход за бородой",
       "photo": "/images/services/beard.jpg"
     },
     {
       "id": 3,
-      "name": "Королевское бритьё",
-      "price": 1800,
-      "duration": 50,
+      "name": "Бритьё шеи и висков",
+      "price": 800,
+      "duration": 20,
       "icon": "🪒",
-      "description": "Распаривание и бритье опасной бритвой",
-      "photo": "/images/services/beard.jpg"
+      "description": "Чистота и свежесть контуров",
+      "photo": "/images/services/shave.jpg"
     },
     {
       "id": 4,
-      "name": "Стрижка машиной",
-      "price": 1000,
-      "duration": 30,
-      "icon": "🔌",
-      "description": "Короткая стрижка одной или двумя насадками",
-      "photo": "/images/services/clipper.jpg"
-    },
-    {
-      "id": 5,
-      "name": "Комбо: Стрижка + Борода",
-      "price": 2800,
+      "name": "Комплекс «Все включено»",
+      "price": 3000,
       "duration": 90,
       "icon": "💎",
-      "description": "Полный комплекс услуг для вашего стиля",
+      "description": "Стрижка + борода + патчи под глаза",
       "photo": "/images/services/combo.jpg"
     },
     {
-      "id": 6,
-      "name": "Отец + Сын (с 5 лет)",
-      "price": 3200,
+      "id": 5,
+      "name": "Отец + Сын",
+      "price": 3500,
       "duration": 100,
       "icon": "👔",
-      "description": "Совместный поход в барбершоп для отца и сына",
+      "description": "Традиционный поход в барбершоп для двоих",
       "photo": "/images/services/father-son.jpg"
     },
     {
-      "id": 7,
-      "name": "Камуфляж седины",
+      "id": 6,
+      "name": "Уход за лицом",
       "price": 1500,
-      "duration": 45,
-      "icon": "🎨",
-      "description": "Естественный цвет за полчаса",
-      "photo": "/images/services/color.jpg"
-    },
-    {
-      "id": 8,
-      "name": "Черная маска + Уход",
-      "price": 1000,
       "duration": 30,
       "icon": "🎭",
-      "description": "Глубокое очищение и увлажнение кожи",
-      "photo": "/images/services/mask.jpg"
+      "description": "Очищение и увлажнение кожи для мужчин",
+      "photo": "/images/services/treatment.jpg"
     }
   ],
   "masters": [
@@ -88,32 +70,28 @@
       "name": "Александр",
       "title": "Top Barber",
       "rating": 5,
-      "photo": "/images/masters/master1.jpg",
-      "chatId": null
+      "photo": "/images/masters/m1.jpg"
     },
     {
       "id": 2,
       "name": "Дмитрий",
       "title": "Master Barber",
       "rating": 4.9,
-      "photo": "/images/masters/master2.jpg",
-      "chatId": null
+      "photo": "/images/masters/m2.jpg"
     },
     {
       "id": 3,
       "name": "Артем",
       "title": "Senior Barber",
       "rating": 4.8,
-      "photo": "/images/masters/master3.jpg",
-      "chatId": null
+      "photo": "/images/masters/m3.jpg"
     },
     {
       "id": 4,
       "name": "Виктор",
       "title": "Barber",
       "rating": 4.7,
-      "photo": "/images/masters/master4.jpg",
-      "chatId": null
+      "photo": "/images/masters/m4.jpg"
     }
   ],
   "bookings": [],

@@ -14,22 +14,22 @@ module.exports = async (request, response) => {
 
     try {
         if (request.method === 'GET') {
-            // Publicly accessible data
             return response.status(200).json({
                 services: db.getServices(),
                 masters: db.getMasters(),
                 settings: db.data.settings,
-                bookings: db.getBookings() // For admin/validation
+                bookings: db.getBookings()
             });
         }
 
         if (request.method === 'POST') {
+            // Public action: add booking
             if (action === 'add_booking') {
                 db.addBooking(data);
-                return response.status(200).json({ success: true });
+                return response.status(200).json({ success: true, bookings: db.getBookings() });
             }
 
-            // Actions requiring auth 
+            // Auth action
             if (action === 'admin_auth') {
                 if (pin === db.data.adminPin) {
                     return response.status(200).json({ success: true });
@@ -37,19 +37,20 @@ module.exports = async (request, response) => {
                 return response.status(401).json({ success: false, message: 'Invalid PIN' });
             }
 
-            // CRUD operations (Admin only)
+            // Admin only actions
             if (pin !== db.data.adminPin) {
                 return response.status(401).json({ error: 'Unauthorized' });
             }
 
-            if (action === 'update_collection') {
-                db.data[collection] = data;
+            if (action === 'update_settings') {
+                db.data.settings = data;
                 db.save();
                 return response.status(200).json({ success: true });
             }
 
-            if (action === 'update_settings') {
-                db.data.settings = data;
+            if (action === 'save_collection') {
+                // Save entire collection (services or masters)
+                db.data[collection] = data;
                 db.save();
                 return response.status(200).json({ success: true });
             }

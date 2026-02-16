@@ -12,7 +12,11 @@ import {
   ChevronLeft,
   X,
   Clock,
-  MapPin
+  MapPin,
+  Edit2,
+  LogOut,
+  Save,
+  Calendar as CalendarIcon
 } from 'lucide-react';
 import {
   format,
@@ -29,7 +33,7 @@ interface Service {
   id: string | number;
   name: string;
   price: number;
-  duration: number; // minutes
+  duration: number;
   icon: string;
   description: string;
   photo: string;
@@ -51,6 +55,7 @@ interface Booking {
   services: Service[];
   total: number;
   clientName?: string;
+  masterName?: string;
 }
 
 type Step = 'services' | 'masters' | 'calendar' | 'confirmation' | 'success' | 'admin_auth' | 'admin';
@@ -69,12 +74,13 @@ const App: React.FC = () => {
   // User Selection
   const [selectedServices, setSelectedServices] = useState<Service[]>([]);
   const [selectedMaster, setSelectedMaster] = useState<Master | null>(null);
-  const [selectedDate, setSelectedDate] = useState<Date>(addDays(new Date(), 1));
+  const [selectedDate, setSelectedDate] = useState<Date>(addDays(new Date(), 0)); // Today is a good start
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
 
   // Admin State
   const [adminPin, setAdminPin] = useState('');
   const [adminTab, setAdminTab] = useState<'bookings' | 'services' | 'masters' | 'settings'>('bookings');
+  const [editingItem, setEditingItem] = useState<any>(null);
 
   // Initialization
   useEffect(() => {
@@ -102,10 +108,41 @@ const App: React.FC = () => {
         setStep('admin');
       } else {
         WebApp.showAlert('Неверный ПИН-код');
+        setAdminPin('');
       }
     } catch (err) {
       WebApp.showAlert('Ошибка авторизации');
     }
+  };
+
+  const logoutAdmin = () => {
+    setAdminPin('');
+    setStep('services');
+  };
+
+  // --- Admin CRUD ---
+  const saveCollection = async (collection: 'services' | 'masters', newData: any[]) => {
+    try {
+      await axios.post('/api/data', {
+        action: 'save_collection',
+        collection,
+        data: newData,
+        pin: adminPin
+      });
+      fetchData();
+      setEditingItem(null);
+    } catch (err) {
+      WebApp.showAlert('Ошибка сохранения');
+    }
+  };
+
+  const deleteItem = (collection: 'services' | 'masters', id: string | number) => {
+    WebApp.showConfirm('Вы уверены?', (ok) => {
+      if (ok) {
+        const filtered = (data as any)[collection].filter((item: any) => item.id !== id);
+        saveCollection(collection, filtered);
+      }
+    });
   };
 
   // --- Logic ---
@@ -118,7 +155,6 @@ const App: React.FC = () => {
     const times = [];
     const workStartStr = data.settings?.working_hours?.start || '10:00';
     const workEndStr = data.settings?.working_hours?.end || '21:00';
-
     const workStart = parse(workStartStr, 'HH:mm', new Date());
     const workEnd = parse(workEndStr, 'HH:mm', new Date());
 
@@ -127,36 +163,21 @@ const App: React.FC = () => {
 
     while (isAfter(workEnd, current)) {
       const timeStr = format(current, 'HH:mm');
-
       const isOccupied = data.bookings.some(b => {
         if (String(b.masterId) !== String(selectedMaster.id) || b.date !== dateStr) return false;
-
         const bStart = parse(b.time, 'HH:mm', new Date());
-        const bDuration = b.services?.reduce((sum, s) => sum + s.duration, 0) || 60;
-        const bEnd = addMinutes(bStart, bDuration);
-
+        const bDur = b.services?.reduce((sum, s) => sum + s.duration, 0) || 60;
+        const bEnd = addMinutes(bStart, bDur);
         const slotStart = current;
-        const slotEnd = addMinutes(current, totalDuration);
-
+        const slotEnd = addMinutes(current, totalDuration || 30);
         return (slotStart < bEnd && slotEnd > bStart);
       });
 
-      if (!isOccupied) {
-        times.push(timeStr);
-      }
-
+      if (!isOccupied) times.push(timeStr);
       current = addMinutes(current, 30);
     }
     return times;
   }, [selectedMaster, selectedDate, selectedServices, totalDuration, data.bookings, data.settings]);
-
-  const toggleService = (service: Service) => {
-    if (selectedServices.find(s => s.id === service.id)) {
-      setSelectedServices(selectedServices.filter(s => s.id !== service.id));
-    } else {
-      setSelectedServices([...selectedServices, service]);
-    }
-  };
 
   const handleFinalBooking = async () => {
     if (!selectedTime || !selectedMaster) return;
@@ -164,63 +185,71 @@ const App: React.FC = () => {
     const bookingData = {
       id: Date.now(),
       services: selectedServices,
-      master: selectedMaster,
       masterId: selectedMaster.id,
+      masterName: selectedMaster.name,
       date: format(selectedDate, 'yyyy-MM-dd'),
       time: selectedTime,
       total: totalPrice,
-      duration: totalDuration,
       clientName: WebApp.initDataUnsafe?.user?.first_name || 'Клиент'
     };
 
     try {
-      await axios.post('/api/data', {
-        action: 'add_booking',
-        data: bookingData
-      });
+      const res = await axios.post('/api/data', { action: 'add_booking', data: bookingData });
+      if (res.data.success) {
+        setData(prev => ({ ...prev, bookings: res.data.bookings }));
+      }
     } catch (err) {
-      console.error('API update failed:', err);
+      console.error('Booking sync failed');
     }
 
     WebApp.sendData(JSON.stringify(bookingData));
     setStep('success');
   };
 
+  // --- Shared Components ---
+  const Modal = ({ title, children, onClose }: any) => (
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-md flex items-end sm:items-center justify-center p-4">
+      <motion.div initial={{ y: 100 }} animate={{ y: 0 }} className="bg-[#1a1b22] w-full max-w-md rounded-[32px] p-8 border border-white/10 overflow-hidden relative">
+        <div className="flex justify-between items-center mb-6">
+          <h3 className="text-xl font-bold">{title}</h3>
+          <button onClick={onClose} className="p-2 bg-white/5 rounded-full"><X size={20} /></button>
+        </div>
+        {children}
+      </motion.div>
+    </motion.div>
+  );
+
   // --- Views ---
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center h-screen bg-[#0c0d10]">
-        <div className="logo-container mb-4">
-          <h1 className="logo-text text-3xl">RETRO</h1>
-          <div className="logo-subtitle">Barbershop</div>
-        </div>
-        <div className="text-accent-gold text-sm font-bold animate-pulse tracking-widest">Загрузка данных...</div>
+        <div className="text-accent-gold text-lg font-bold animate-pulse">Загрузка...</div>
       </div>
     );
   }
 
   return (
-    <div className="container p-0 max-w-lg mx-auto overflow-x-hidden min-h-screen">
-      {/* Top Header */}
-      <div className="px-6 pt-6 flex justify-between items-center">
-        <div className="logo-container p-0 m-0 text-left">
-          <h1 className="logo-text text-2xl tracking-[2px]">{data.settings?.name?.split(' ')[0] || 'RETRO'}</h1>
-          <div className="logo-subtitle text-[8px] tracking-[4px]">{data.settings?.name?.split(' ')[1] || 'BARBERSHOP'}</div>
+    <div className="container p-0 max-w-lg mx-auto overflow-x-hidden min-h-screen pb-32">
+      {/* Header */}
+      <div className="px-6 pt-8 flex justify-between items-center bg-[#0c0d10] sticky top-0 z-40">
+        <div>
+          <h1 className="logo-text text-2xl tracking-[2px]">{data.settings?.name?.split(' ')[0]}</h1>
+          <div className="logo-subtitle text-[8px] tracking-[4px]">{data.settings?.name?.split(' ')[1]}</div>
         </div>
         <button
-          onClick={() => step === 'admin' ? setStep('services') : setStep('admin_auth')}
-          className="w-10 h-10 flex items-center justify-center rounded-full bg-white/5 border border-white/10 text-secondary active:scale-95 transition-all"
+          onClick={() => step === 'admin' ? logoutAdmin() : setStep('admin_auth')}
+          className="w-12 h-12 flex items-center justify-center rounded-2xl bg-white/5 border border-white/10 text-secondary active:scale-95 transition-all"
         >
-          {step === 'admin' ? <X size={20} /> : <Settings size={20} />}
+          {step === 'admin' ? <LogOut size={22} /> : <Settings size={22} />}
         </button>
       </div>
 
       <AnimatePresence mode="wait">
         {step === 'services' && (
-          <motion.div key="services" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="p-6 pb-32">
+          <motion.div key="services" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-6">
             <div className="flex items-center justify-between mb-8">
-              <h2 className="text-2xl font-bold">Выберите услуги</h2>
-              <div className="text-[10px] items-center gap-1 flex text-secondary uppercase tracking-widest">
+              <h2 className="text-2xl font-bold">Услуги</h2>
+              <div className="bg-white/5 px-4 py-2 rounded-full border border-white/10 text-[10px] font-bold uppercase tracking-widest text-accent-gold flex items-center gap-2">
                 <Clock size={12} /> {totalDuration} мин
               </div>
             </div>
@@ -229,22 +258,26 @@ const App: React.FC = () => {
               {data.services.map(s => (
                 <div
                   key={s.id}
-                  onClick={() => toggleService(s)}
-                  className={`glass-card p-0 transition-all ${selectedServices.find(x => x.id === s.id) ? 'selected scale-[1.02]' : ''}`}
+                  onClick={() => {
+                    const exists = selectedServices.find(x => x.id === s.id);
+                    if (exists) setSelectedServices(selectedServices.filter(x => x.id !== s.id));
+                    else setSelectedServices([...selectedServices, s]);
+                  }}
+                  className={`glass-card p-0 relative group transition-all duration-500 ${selectedServices.find(x => x.id === s.id) ? 'selected border-accent-gold' : ''}`}
                 >
-                  <div className="relative h-44 overflow-hidden">
-                    <img src={s.photo} alt={s.name} className="w-full h-full object-cover grayscale-[0.2]" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
-                    <div className="absolute bottom-4 left-4 right-4 flex justify-between items-end">
+                  <div className="h-48 overflow-hidden">
+                    <img src={s.photo} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
+                    <div className="absolute bottom-5 left-5 right-5 flex justify-between items-end">
                       <div>
-                        <div className="text-[10px] uppercase font-bold text-accent-gold tracking-widest mb-1">{s.icon} Service</div>
+                        <div className="text-[10px] text-accent-gold font-black uppercase tracking-[3px] mb-2">{s.icon} Service</div>
                         <h3 className="text-xl font-bold">{s.name}</h3>
                       </div>
-                      <div className="price-text">{s.price}₽</div>
+                      <div className="price-text text-2xl">{s.price}₽</div>
                     </div>
                   </div>
                   {selectedServices.find(x => x.id === s.id) && (
-                    <div className="absolute top-4 right-4 bg-accent-gold text-black rounded-full p-1 border-2 border-accent-gold">
+                    <div className="absolute top-5 right-5 bg-accent-gold text-black rounded-full p-1 shadow-xl">
                       <CheckCircle2 size={24} />
                     </div>
                   )}
@@ -254,12 +287,9 @@ const App: React.FC = () => {
 
             {selectedServices.length > 0 && (
               <div className="sticky-footer">
-                <button onClick={() => setStep('masters')} className="btn-luxury flex justify-between items-center group">
-                  <span>Мастера</span>
-                  <div className="flex items-center gap-3">
-                    <span className="opacity-60 text-xs font-medium">{totalPrice}₽</span>
-                    <ChevronRight className="group-active:translate-x-1 transition-transform" />
-                  </div>
+                <button onClick={() => setStep('masters')} className="btn-luxury py-6 text-base flex justify-between px-10">
+                  <span>Выбрать мастера</span>
+                  <span className="opacity-50 font-medium">{totalPrice}₽</span>
                 </button>
               </div>
             )}
@@ -267,255 +297,221 @@ const App: React.FC = () => {
         )}
 
         {step === 'masters' && (
-          <motion.div key="masters" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="p-6 pb-32">
+          <motion.div key="masters" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="p-6">
             <h2 className="text-2xl font-bold mb-8">Мастер</h2>
             <div className="grid grid-cols-1 gap-6">
               {data.masters.map(m => (
                 <div
                   key={m.id}
                   onClick={() => setSelectedMaster(m)}
-                  className={`glass-card p-5 flex items-center gap-6 transition-all ${selectedMaster?.id === m.id ? 'selected scale-[1.02]' : ''}`}
+                  className={`glass-card p-5 flex items-center gap-6 transition-all border-2 ${selectedMaster?.id === m.id ? 'border-accent-gold bg-accent-gold/5' : 'border-transparent'}`}
                 >
-                  <div className="relative">
-                    <img src={m.photo} className="w-24 h-24 rounded-2xl object-cover ring-1 ring-white/10" />
-                    {selectedMaster?.id === m.id && (
-                      <div className="absolute -bottom-2 -right-2 bg-accent-gold text-black rounded-full p-1 scale-75">
-                        <CheckCircle2 size={24} />
-                      </div>
-                    )}
-                  </div>
+                  <img src={m.photo} className="w-24 h-24 rounded-3xl object-cover shadow-2xl" />
                   <div className="flex-1">
                     <h3 className="font-bold text-xl mb-1">{m.name}</h3>
-                    <div className="text-secondary text-xs flex items-center gap-2 mb-3">
+                    <div className="text-secondary text-[11px] font-bold uppercase tracking-widest flex items-center gap-2 mb-3">
                       <Award size={14} className="text-accent-gold" /> {m.title}
                     </div>
-                    <div className="flex items-center gap-1 px-3 py-1 bg-white/5 border border-white/10 rounded-full w-fit">
-                      <span className="text-accent-gold text-xs font-bold leading-none">★ {m.rating}</span>
-                    </div>
+                    <div className="text-accent-gold text-sm font-bold">★ {m.rating}</div>
                   </div>
                 </div>
               ))}
             </div>
             {selectedMaster && (
               <div className="sticky-footer">
-                <button onClick={() => setStep('calendar')} className="btn-luxury flex justify-between items-center">
-                  <span>Выбрать время</span>
-                  <ChevronRight />
-                </button>
+                <button onClick={() => setStep('calendar')} className="btn-luxury py-6">Продолжить</button>
               </div>
             )}
-            <button onClick={() => setStep('services')} className="mt-8 w-full text-secondary text-sm font-medium flex items-center justify-center gap-2">
-              <ChevronLeft size={16} /> К услугам
-            </button>
+            <button onClick={() => setStep('services')} className="mt-8 w-full text-secondary text-xs font-bold uppercase tracking-widest opacity-50">Назад</button>
           </motion.div>
         )}
 
         {step === 'calendar' && (
-          <motion.div key="calendar" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="p-6 pb-32">
-            <div className="mb-8">
-              <h2 className="text-2xl font-bold mb-2">Дата и время</h2>
-              <div className="text-xs text-secondary flex items-center gap-2">
-                <MapPin size={12} /> {data.settings?.address}
-              </div>
-            </div>
+          <motion.div key="calendar" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-6">
+            <h2 className="text-2xl font-bold mb-8">Дата и время</h2>
 
-            <div className="date-scroller scrollbar-hide">
+            <div className="date-scroller scrollbar-hide mb-10">
               {[...Array(30)].map((_, i) => {
-                const day = addDays(new Date(), i + 1);
+                const day = addDays(new Date(), i);
                 const active = isSameDay(day, selectedDate);
                 return (
-                  <div
-                    key={i}
-                    onClick={() => { setSelectedDate(day); setSelectedTime(null); }}
-                    className={`date-item ${active ? 'active' : ''}`}
-                  >
-                    <span className={`text-[10px] uppercase font-bold mb-1 ${active ? 'text-black/60' : 'text-secondary opacity-60'}`}>
-                      {format(day, 'EEE', { locale: ru })}
+                  <div key={i} onClick={() => { setSelectedDate(day); setSelectedTime(null); }} className={`date-item min-w-[100px] h-[110px] ${active ? 'active' : ''}`}>
+                    <span className="text-[10px] font-black uppercase tracking-widest opacity-50 mb-2">
+                      {format(day, 'EEEE', { locale: ru })}
                     </span>
-                    <span className="text-xl font-bold tracking-tight">{format(day, 'd')}</span>
+                    <span className="text-2xl font-black">{format(day, 'd')}</span>
                   </div>
                 );
               })}
             </div>
 
-            <div className="mt-8">
-              <div className="text-[10px] uppercase font-bold text-secondary tracking-[2px] mb-4">Доступные слоты</div>
+            <div className="mb-6">
+              <div className="text-secondary text-[11px] font-black uppercase tracking-[3px] mb-4">
+                {format(selectedDate, 'd MMMM yyyy года', { locale: ru })}
+              </div>
               <div className="time-grid">
                 {availableTimes.length > 0 ? (
                   availableTimes.map(t => (
-                    <div
-                      key={t}
-                      onClick={() => setSelectedTime(t)}
-                      className={`time-slot ${selectedTime === t ? 'selected' : ''}`}
-                    >
+                    <div key={t} onClick={() => setSelectedTime(t)} className={`time-slot h-16 ${selectedTime === t ? 'selected' : ''}`}>
                       {t}
                     </div>
                   ))
                 ) : (
-                  <div className="col-span-3 text-center py-10 text-secondary bg-white/5 rounded-2xl border border-dashed border-white/10">
-                    На этот день нет свободного времени
-                  </div>
+                  <div className="col-span-3 py-12 text-center text-secondary border-2 border-dashed border-white/5 rounded-3xl font-bold">Нет свободных мест</div>
                 )}
               </div>
             </div>
 
             {selectedTime && (
               <div className="sticky-footer">
-                <button onClick={() => setStep('confirmation')} className="btn-luxury flex justify-between items-center">
-                  <span>Далее</span>
-                  <ChevronRight />
-                </button>
+                <button onClick={() => setStep('confirmation')} className="btn-luxury py-6">Записаться</button>
               </div>
             )}
-            <button onClick={() => setStep('masters')} className="mt-8 w-full text-secondary text-sm font-medium flex items-center justify-center gap-2">
-              <ChevronLeft size={16} /> Назад
-            </button>
+            <button onClick={() => setStep('masters')} className="mt-8 w-full text-secondary text-xs font-bold uppercase tracking-widest opacity-50 text-center">Назад</button>
           </motion.div>
         )}
 
         {step === 'confirmation' && (
-          <motion.div key="confirmation" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="p-6">
-            <div className="glass-card mb-8 overflow-visible">
-              <div className="relative -mt-6 mx-6 p-8 rounded-[32px] bg-accent-gold text-[#0c0d10] shadow-2xl overflow-hidden">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-white/20 blur-3xl rounded-full translate-x-10 -translate-y-10" />
-                <div className="text-[10px] uppercase font-black tracking-[3px] opacity-60 mb-2">Ваша запись</div>
-                <div className="text-4xl font-extrabold mb-1">{selectedTime}</div>
-                <div className="text-xs font-bold uppercase tracking-wide opacity-80">{format(selectedDate, 'd MMMM, EEEE', { locale: ru })}</div>
+          <motion.div key="confirmation" initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="p-6 text-center">
+            <div className="glass-card mb-10 p-10">
+              <div className="w-20 h-20 bg-accent-gold rounded-full flex items-center justify-center mx-auto mb-8 shadow-[0_0_40px_rgba(197,166,118,0.4)]">
+                <CalendarIcon size={32} className="text-black" />
               </div>
+              <h2 className="text-3xl font-black mb-4">{selectedTime}</h2>
+              <p className="text-secondary font-bold uppercase tracking-widest text-[11px] mb-10">
+                {format(selectedDate, 'EEEE, d MMMM', { locale: ru })}
+              </p>
 
-              <div className="p-8 space-y-8">
-                <div className="flex items-center gap-5">
-                  <img src={selectedMaster?.photo} className="w-16 h-16 rounded-2xl object-cover ring-4 ring-white/5" />
-                  <div>
-                    <div className="text-[10px] uppercase font-bold text-secondary tracking-widest mb-1">Мастер</div>
-                    <div className="font-bold text-lg">{selectedMaster?.name}</div>
+              <div className="space-y-4 text-left border-t border-white/10 pt-8">
+                <div className="flex justify-between items-center">
+                  <span className="text-secondary text-xs font-bold uppercase tracking-widest">Мастер:</span>
+                  <span className="font-bold">{selectedMaster?.name}</span>
+                </div>
+                <div className="flex justify-between items-start">
+                  <span className="text-secondary text-xs font-bold uppercase tracking-widest">Услуги:</span>
+                  <div className="text-right flex flex-col items-end">
+                    {selectedServices.map(s => <span key={s.id} className="font-bold text-sm">{s.name}</span>)}
                   </div>
                 </div>
-
-                <div className="space-y-4">
-                  <div className="text-[10px] uppercase font-bold text-secondary tracking-widest">Выбранные услуги</div>
-                  {selectedServices.map(s => (
-                    <div key={s.id} className="flex justify-between items-center text-sm">
-                      <span className="font-medium">{s.name}</span>
-                      <span className="font-bold text-accent-gold">{s.price}₽</span>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="pt-8 border-t border-white/10 flex justify-between items-center">
-                  <div>
-                    <div className="text-[10px] uppercase font-bold text-secondary tracking-widest">Общая сумма</div>
-                    <span className="text-3xl font-black text-white">{totalPrice}₽</span>
-                  </div>
-                  <div className="text-right">
-                    <div className="text-[10px] uppercase font-bold text-secondary tracking-widest">Длительность</div>
-                    <span className="font-bold text-lg">{totalDuration} мин</span>
-                  </div>
+                <div className="flex justify-between items-center pt-4 border-t border-white/5">
+                  <span className="text-accent-gold text-xs font-black uppercase tracking-widest">К оплате:</span>
+                  <span className="text-2xl font-black">{totalPrice}₽</span>
                 </div>
               </div>
             </div>
 
-            <button onClick={handleFinalBooking} className="btn-luxury py-6 text-base tracking-[3px]">
-              Подтвердить запись
-            </button>
-            <button onClick={() => setStep('calendar')} className="mt-6 w-full text-secondary text-sm font-bold uppercase tracking-[1px] opacity-40">
-              ← Назад
-            </button>
+            <button onClick={handleFinalBooking} className="btn-luxury py-7 text-lg">Подтвердить</button>
+            <button onClick={() => setStep('calendar')} className="mt-8 text-secondary text-xs font-bold uppercase tracking-widest opacity-40">Назад</button>
           </motion.div>
         )}
 
         {step === 'success' && (
-          <div className="p-6 text-center py-20">
-            <motion.div initial={{ scale: 0 }} animate={{ scale: 1, rotate: 360 }} transition={{ type: 'spring', damping: 10 }} className="bg-accent-gold/10 p-12 rounded-full w-fit mx-auto mb-12 border border-accent-gold/20">
-              <CheckCircle2 size={80} className="text-accent-gold" />
+          <div className="p-8 text-center pt-24">
+            <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring' }} className="mb-12 relative w-32 h-32 mx-auto">
+              <div className="absolute inset-0 bg-accent-gold rounded-full blur-2xl opacity-20" />
+              <CheckCircle2 size={128} className="text-accent-gold relative" />
             </motion.div>
-            <h2 className="text-4xl font-black mb-6 uppercase tracking-tighter">Готово!</h2>
-            <p className="text-secondary mb-12 text-sm max-w-[80%] mx-auto leading-loose font-medium">Ваша запись создана. Мастер подтвердит её в ближайшее время в чате.</p>
-            <button onClick={() => WebApp.close()} className="btn-luxury">Вернуться в бот</button>
+            <h2 className="text-4xl font-black mb-4">УСПЕШНО!</h2>
+            <p className="text-secondary mb-12 text-sm max-w-[200px] mx-auto leading-loose">Мы ждем вас в Retro Barbershop в назначенное время.</p>
+            <button onClick={() => WebApp.close()} className="btn-luxury py-6">Закрыть</button>
           </div>
         )}
 
         {step === 'admin_auth' && (
-          <motion.div key="admin_auth" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-6 pt-20">
-            <div className="glass-card p-10">
-              <div className="w-16 h-16 bg-accent-gold/10 rounded-3xl flex items-center justify-center mx-auto mb-8 border border-accent-gold/10">
-                <Settings className="text-accent-gold" size={32} />
-              </div>
-              <h2 className="text-2xl font-bold mb-2 text-center">Вход для персонала</h2>
-              <p className="text-secondary text-[10px] text-center uppercase tracking-widest mb-10 font-bold opacity-60">Введите секретный код</p>
-              <div className="space-y-6">
-                <input
-                  type="password"
-                  value={adminPin}
-                  onChange={(e) => setAdminPin(e.target.value)}
-                  className="w-full bg-black/40 border border-white/10 p-6 rounded-2xl text-center text-4xl tracking-[12px] font-black focus:border-accent-gold outline-none transition-all shadow-inner"
-                />
-                <button onClick={authenticateAdmin} className="btn-luxury">Открыть панель</button>
-                <button onClick={() => setStep('services')} className="w-full text-secondary text-xs font-bold uppercase tracking-widest opacity-40">Отмена</button>
-              </div>
+          <motion.div key="admin_auth" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-6 pt-24">
+            <div className="glass-card p-10 text-center">
+              <Settings size={48} className="text-accent-gold mx-auto mb-8 animate-spin-slow" />
+              <h3 className="text-2xl font-bold mb-8">Доступ ограничен</h3>
+              <input
+                type="password"
+                autoFocus
+                value={adminPin}
+                onChange={e => setAdminPin(e.target.value)}
+                placeholder="PIN"
+                className="w-full bg-black/40 border-2 border-white/10 p-6 rounded-3xl text-center text-4xl tracking-[20px] font-black outline-none focus:border-accent-gold transition-all"
+              />
+              <button onClick={authenticateAdmin} className="btn-luxury mt-8 py-6">Войти</button>
+              <button onClick={() => setStep('services')} className="mt-6 text-secondary text-xs font-bold uppercase tracking-widest opacity-40">Отмена</button>
             </div>
           </motion.div>
         )}
 
         {step === 'admin' && (
           <motion.div key="admin" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-6">
-            <div className="flex gap-2 overflow-x-auto mb-10 scrollbar-hide">
+            <div className="flex gap-2 overflow-x-auto mb-10 scrollbar-hide py-2">
               {['bookings', 'services', 'masters', 'settings'].map(tab => (
                 <button
                   key={tab}
-                  onClick={() => setAdminTab(tab as any)}
-                  className={`px-5 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap border ${adminTab === tab ? 'bg-accent-gold text-black border-accent-gold' : 'bg-white/5 text-secondary border-white/10'}`}
+                  onClick={() => { setAdminTab(tab as any); setEditingItem(null); }}
+                  className={`px-6 py-3 rounded-2xl text-[10px] font-black uppercase tracking-[2px] whitespace-nowrap border-2 transition-all ${adminTab === tab ? 'bg-accent-gold border-accent-gold text-black shadow-[0_5px_15px_rgba(197,166,118,0.3)]' : 'bg-white/5 border-white/10 text-secondary'}`}
                 >
-                  {tab === 'bookings' ? 'Записи' : tab === 'services' ? 'Каталог' : tab === 'masters' ? 'Мастера' : 'Офис'}
+                  {tab === 'bookings' ? 'ЗАПИСИ' : tab === 'services' ? 'УСЛУГИ' : tab === 'masters' ? 'МАСТЕРА' : 'ОФИС'}
                 </button>
               ))}
             </div>
 
             {adminTab === 'bookings' && (
               <div className="space-y-6">
-                {data.bookings.length === 0 ? (
-                  <div className="text-center py-24 text-secondary border-2 border-dashed border-white/5 rounded-[32px] font-bold text-xs uppercase tracking-widest opacity-40">Записей нет</div>
-                ) : (
-                  [...data.bookings].sort((a, b) => b.id - a.id).map(b => (
-                    <div key={b.id} className="glass-card p-6 border-l-4 border-l-accent-gold">
-                      <div className="flex justify-between items-start mb-6">
-                        <div>
-                          <div className="text-accent-gold font-black text-2xl">{b.time}</div>
-                          <div className="text-[10px] text-secondary font-bold uppercase tracking-widest">{b.date}</div>
-                        </div>
-                        <div className="text-right">
-                          <div className="font-bold text-base mb-1">{b.clientName || 'Клиент'}</div>
-                          <div className="text-xs bg-white/5 px-3 py-1 rounded-full border border-white/10">{b.total}₽</div>
-                        </div>
+                {[...data.bookings].sort((a, b) => b.id - a.id).map(b => (
+                  <div key={b.id} className="glass-card p-6 border-l-4 border-accent-gold bg-white/[0.02]">
+                    <div className="flex justify-between items-start mb-6">
+                      <div>
+                        <div className="text-2xl font-black text-accent-gold mb-1">{b.time}</div>
+                        <div className="text-[10px] font-bold uppercase tracking-widest text-secondary">{format(parse(b.date, 'yyyy-MM-dd', new Date()), 'd MMMM yyyy', { locale: ru })}</div>
                       </div>
-                      <div className="flex flex-wrap gap-2">
-                        {b.services?.map((s, idx) => (
-                          <span key={idx} className="text-[9px] font-black uppercase tracking-widest bg-accent-gold/10 text-accent-gold px-3 py-1 rounded-lg border border-accent-gold/20">
-                            {s.name}
-                          </span>
-                        ))}
+                      <div className="text-right">
+                        <div className="font-bold text-lg mb-1">{b.clientName}</div>
+                        <div className="text-[10px] bg-white/5 border border-white/10 px-3 py-1 rounded-full text-secondary uppercase font-bold tracking-widest">{b.masterName}</div>
                       </div>
                     </div>
-                  ))
-                )}
+                    <div className="flex flex-wrap gap-2 py-4 border-t border-white/5">
+                      {b.services?.map((s, idx) => (
+                        <span key={idx} className="text-[9px] font-black uppercase tracking-widest bg-white/5 border border-white/10 px-3 py-1 rounded-lg">{s.name}</span>
+                      ))}
+                    </div>
+                    <div className="mt-4 text-right">
+                      <span className="text-xl font-black">{b.total}₽</span>
+                    </div>
+                  </div>
+                ))}
               </div>
             )}
 
             {adminTab === 'services' && (
               <div className="space-y-6">
-                <button className="w-full p-6 border-2 border-dashed border-accent-gold/30 text-accent-gold rounded-3xl flex items-center justify-center gap-3 font-black text-xs uppercase tracking-widest hover:bg-accent-gold/5 transition-all">
-                  <Plus size={20} /> Добавить услугу
+                <button onClick={() => setEditingItem({ id: Date.now(), name: '', price: 1000, duration: 30, icon: '✂️', description: '', photo: '/images/services/haircut.jpg' })} className="w-full p-8 border-2 border-dashed border-accent-gold/20 rounded-3xl flex items-center justify-center gap-4 text-accent-gold font-black uppercase tracking-widest bg-accent-gold/5 active:scale-95 transition-all">
+                  <Plus /> Добавить услугу
                 </button>
+                {editingItem && adminTab === 'services' && (
+                  <Modal title="Редактировать услугу" onClose={() => setEditingItem(null)}>
+                    <div className="space-y-6">
+                      <input className="admin-input" placeholder="Название" value={editingItem.name} onChange={e => setEditingItem({ ...editingItem, name: e.target.value })} />
+                      <div className="grid grid-cols-2 gap-4">
+                        <input className="admin-input" type="number" placeholder="Цена" value={editingItem.price} onChange={e => setEditingItem({ ...editingItem, price: Number(e.target.value) })} />
+                        <input className="admin-input" type="number" placeholder="Минуты" value={editingItem.duration} onChange={e => setEditingItem({ ...editingItem, duration: Number(e.target.value) })} />
+                      </div>
+                      <input className="admin-input" placeholder="Иконка (emoji)" value={editingItem.icon} onChange={e => setEditingItem({ ...editingItem, icon: e.target.value })} />
+                      <textarea className="admin-input h-24 pt-4" placeholder="Описание" value={editingItem.description} onChange={e => setEditingItem({ ...editingItem, description: e.target.value })} />
+                      <button className="btn-luxury py-5" onClick={() => {
+                        const existing = data.services.find(s => s.id === editingItem.id);
+                        const newList = existing ? data.services.map(s => s.id === editingItem.id ? editingItem : s) : [...data.services, editingItem];
+                        saveCollection('services', newList);
+                      }}>
+                        <Save size={20} className="mr-2 inline" /> Сохранить
+                      </button>
+                    </div>
+                  </Modal>
+                )}
                 {data.services.map(s => (
                   <div key={s.id} className="glass-card flex items-center p-4 gap-5">
-                    <img src={s.photo} className="w-14 h-14 rounded-2xl object-cover" />
+                    <img src={s.photo} className="w-16 h-16 rounded-2xl object-cover" />
                     <div className="flex-1">
-                      <div className="font-bold text-base mb-1">{s.name}</div>
-                      <div className="text-[10px] text-secondary font-bold uppercase tracking-widest">{s.price}₽ • {s.duration} мин</div>
+                      <div className="font-bold text-lg mb-1">{s.name}</div>
+                      <div className="text-[10px] text-secondary font-black tracking-widest uppercase">{s.price}₽ • {s.duration} мин</div>
                     </div>
                     <div className="flex gap-2">
-                      <button className="w-10 h-10 flex items-center justify-center rounded-xl bg-white/5 text-secondary"><Settings size={16} /></button>
-                      <button className="w-10 h-10 flex items-center justify-center rounded-xl bg-white/5 text-secondary hover:text-red-400"><Trash2 size={16} /></button>
+                      <button onClick={() => setEditingItem(s)} className="p-3 bg-white/5 rounded-xl border border-white/10"><Edit2 size={16} /></button>
+                      <button onClick={() => deleteItem('services', s.id)} className="p-3 bg-red-500/10 text-red-500 rounded-xl border border-red-500/20"><Trash2 size={16} /></button>
                     </div>
                   </div>
                 ))}
@@ -524,15 +520,36 @@ const App: React.FC = () => {
 
             {adminTab === 'masters' && (
               <div className="space-y-6">
+                <button onClick={() => setEditingItem({ id: Date.now(), name: '', title: 'Master', rating: 5.0, photo: '/images/masters/m1.jpg' })} className="w-full p-8 border-2 border-dashed border-accent-gold/20 rounded-3xl flex items-center justify-center gap-4 text-accent-gold font-black uppercase tracking-widest bg-accent-gold/5 active:scale-95 transition-all">
+                  <Plus /> Добавить мастера
+                </button>
+                {editingItem && adminTab === 'masters' && (
+                  <Modal title="Редактировать мастера" onClose={() => setEditingItem(null)}>
+                    <div className="space-y-6">
+                      <input className="admin-input" placeholder="Имя" value={editingItem.name} onChange={e => setEditingItem({ ...editingItem, name: e.target.value })} />
+                      <input className="admin-input" placeholder="Титул" value={editingItem.title} onChange={e => setEditingItem({ ...editingItem, title: e.target.value })} />
+                      <input className="admin-input" type="number" step="0.1" placeholder="Рейтинг" value={editingItem.rating} onChange={e => setEditingItem({ ...editingItem, rating: Number(e.target.value) })} />
+                      <input className="admin-input" placeholder="Фото URL" value={editingItem.photo} onChange={e => setEditingItem({ ...editingItem, photo: e.target.value })} />
+                      <button className="btn-luxury py-5" onClick={() => {
+                        const existing = data.masters.find(m => m.id === editingItem.id);
+                        const newList = existing ? data.masters.map(m => m.id === editingItem.id ? editingItem : m) : [...data.masters, editingItem];
+                        saveCollection('masters', newList);
+                      }}>
+                        <Save size={20} className="mr-2 inline" /> Сохранить
+                      </button>
+                    </div>
+                  </Modal>
+                )}
                 {data.masters.map(m => (
                   <div key={m.id} className="glass-card flex items-center p-4 gap-5">
-                    <img src={m.photo} className="w-14 h-14 rounded-2xl object-cover" />
+                    <img src={m.photo} className="w-16 h-16 rounded-2xl object-cover" />
                     <div className="flex-1">
-                      <div className="font-bold text-base mb-1">{m.name}</div>
-                      <div className="text-[10px] text-secondary font-bold uppercase tracking-widest">{m.title}</div>
+                      <div className="font-bold text-lg mb-1">{m.name}</div>
+                      <div className="text-[10px] text-accent-gold font-black tracking-widest uppercase">{m.title}</div>
                     </div>
                     <div className="flex gap-2">
-                      <Award size={18} className="text-accent-gold" />
+                      <button onClick={() => setEditingItem(m)} className="p-3 bg-white/5 rounded-xl border border-white/10"><Edit2 size={16} /></button>
+                      <button onClick={() => deleteItem('masters', m.id)} className="p-3 bg-red-500/10 text-red-500 rounded-xl border border-red-500/20"><Trash2 size={16} /></button>
                     </div>
                   </div>
                 ))}
@@ -540,29 +557,54 @@ const App: React.FC = () => {
             )}
 
             {adminTab === 'settings' && (
-              <div className="glass-card p-8 space-y-8">
-                <div className="space-y-3">
-                  <label className="text-[10px] uppercase font-black text-secondary tracking-widest opacity-60">Название Барбершопа</label>
-                  <input type="text" defaultValue={data.settings.name} className="w-full bg-black/40 border border-white/10 p-5 rounded-2xl outline-none font-bold focus:border-accent-gold" />
+              <div className="glass-card p-10 space-y-10">
+                <div className="space-y-4">
+                  <label className="text-[10px] font-black uppercase tracking-[3px] text-secondary opacity-60">Описание Барбершопа</label>
+                  <input className="admin-input" value={data.settings.name} onChange={e => setData({ ...data, settings: { ...data.settings, name: e.target.value } })} />
                 </div>
-                <div className="grid grid-cols-2 gap-6">
-                  <div className="space-y-3">
-                    <label className="text-[10px] uppercase font-black text-secondary tracking-widest opacity-60">Открытие</label>
-                    <input type="time" defaultValue={data.settings.working_hours.start} className="w-full bg-black/40 border border-white/10 p-5 rounded-2xl outline-none font-bold focus:border-accent-gold" />
+                <div className="grid grid-cols-2 gap-8">
+                  <div className="space-y-4">
+                    <label className="text-[10px] font-black uppercase tracking-[3px] text-secondary opacity-60">Открытие</label>
+                    <input className="admin-input" type="time" value={data.settings.working_hours.start} onChange={e => setData({ ...data, settings: { ...data.settings, working_hours: { ...data.settings.working_hours, start: e.target.value } } })} />
                   </div>
-                  <div className="space-y-3">
-                    <label className="text-[10px] uppercase font-black text-secondary tracking-widest opacity-60">Закрытие</label>
-                    <input type="time" defaultValue={data.settings.working_hours.end} className="w-full bg-black/40 border border-white/10 p-5 rounded-2xl outline-none font-bold focus:border-accent-gold" />
+                  <div className="space-y-4">
+                    <label className="text-[10px] font-black uppercase tracking-[3px] text-secondary opacity-60">Закрытие</label>
+                    <input className="admin-input" type="time" value={data.settings.working_hours.end} onChange={e => setData({ ...data, settings: { ...data.settings, working_hours: { ...data.settings.working_hours, end: e.target.value } } })} />
                   </div>
                 </div>
-                <button className="btn-luxury py-5 font-black">Сохранить изменения</button>
+                <button className="btn-luxury py-6 font-black tracking-[4px]" onClick={() => {
+                  axios.post('/api/data', { action: 'update_settings', data: data.settings, pin: adminPin });
+                  WebApp.showAlert('Сохранено');
+                }}>ОБНОВИТЬ ОФИС</button>
               </div>
             )}
-
-            <div className="text-center mt-12 opacity-30 text-[9px] font-black uppercase tracking-[4px]">v1.6.0 - Luxury Admin</div>
           </motion.div>
         )}
       </AnimatePresence>
+      <style>{`
+        .admin-input {
+          width: 100%;
+          background: rgba(255,255,255,0.03);
+          border: 2px solid rgba(255,255,255,0.05);
+          border-radius: 20px;
+          padding: 20px;
+          color: white;
+          font-weight: 700;
+          outline: none;
+          transition: all 0.3s;
+        }
+        .admin-input:focus {
+          border-color: var(--accent-gold);
+          background: rgba(197, 166, 118, 0.05);
+        }
+        .animate-spin-slow {
+          animation: spin 8s linear infinite;
+        }
+        @keyframes spin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+      `}</style>
     </div>
   );
 };

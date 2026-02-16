@@ -148,10 +148,12 @@ body {
   font-size: 24px;
   margin-right: 15px;
 }
+
 /* New Utilities */
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
+
 .scrollbar-hide {
   -ms-overflow-style: none;
   scrollbar-width: none;
@@ -188,33 +190,41 @@ body {
   border-color: var(--accent-gold);
   color: #000;
   transform: scale(1.05);
-  box-shadow: 0 10px 20px rgba(197, 166, 118, 0.2);
+  box-shadow: 0 10px 30px rgba(197, 166, 118, 0.3);
+  transform: translateY(-4px);
 }
 
 .time-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
+  white-space: nowrap;
   padding: 10px 0;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 .time-slot {
-  aspect-ratio: 2.5 / 1;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 20px;
+  padding: 16px;
+  text-align: center;
+  font-weight: 800;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.3s;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  background: rgba(255, 255, 255, 0.03);
-  font-weight: 600;
-  font-size: 15px;
-  color: var(--text-secondary);
-  transition: all 0.2s ease;
 }
 
 .time-slot.selected {
   background: var(--accent-gold);
-  color: #000;
   border-color: var(--accent-gold);
-  box-shadow: 0 5px 15px rgba(197, 166, 118, 0.2);
+  color: #1a1b22;
+  box-shadow: 0 8px 20px rgba(197, 166, 118, 0.2);
+}
+
+.text-secondary {
+  color: #8e8e93;
 }
