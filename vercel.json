@@ -1,0 +1,18 @@
+{
+    "version": 2,
+    "rewrites": [
+        {
+            "source": "/api/bot",
+            "destination": "/api/webhook.js"
+        },
+        {
+            "source": "/(.*)",
+            "destination": "/mini-app/dist/$1"
+        }
+    ],
+    "functions": {
+        "api/webhook.js": {
+            "runtime": "nodejs18.x"
+        }
+    }
+}

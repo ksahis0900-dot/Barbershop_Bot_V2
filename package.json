@@ -1,0 +1,27 @@
+{
+  "name": "retro-barbershop-bot",
+  "version": "1.0.0",
+  "description": "Telegram Bot для записи в барбершоп Retro",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
+    "build": "cd mini-app && npm install && npm run build"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.4",
+    "moment": "^2.30.1",
+    "node-telegram-bot-api": "^0.64.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  },
+  "keywords": [
+    "telegram",
+    "bot",
+    "barbershop",
+    "booking"
+  ],
+  "author": "",
+  "license": "MIT"
+}
