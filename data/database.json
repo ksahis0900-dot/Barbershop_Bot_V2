@@ -1,0 +1,122 @@
+{
+  "settings": {
+    "name": "Retro Barbershop",
+    "address": "ул. Центральная, 123",
+    "phone": "+7 (999) 123-45-67",
+    "working_hours": {
+      "start": "10:00",
+      "end": "21:00"
+    }
+  },
+  "services": [
+    {
+      "id": 1,
+      "name": "Стрижка «Мужской стиль»",
+      "price": 2000,
+      "duration": 60,
+      "icon": "✂️",
+      "description": "Классика и тренды в одном флаконе",
+      "photo": "/images/services/haircut.jpg"
+    },
+    {
+      "id": 2,
+      "name": "Моделирование бороды",
+      "price": 1200,
+      "duration": 40,
+      "icon": "🧔",
+      "description": "Идеальные контуры и премиальный уход",
+      "photo": "/images/services/beard.jpg"
+    },
+    {
+      "id": 3,
+      "name": "Королевское бритьё",
+      "price": 1800,
+      "duration": 50,
+      "icon": "🪒",
+      "description": "Распаривание и бритье опасным лезвием",
+      "photo": "/images/services/shave.jpg"
+    },
+    {
+      "id": 4,
+      "name": "Стрижка под машинку",
+      "price": 1000,
+      "duration": 30,
+      "icon": "🔌",
+      "description": "Быстро, четко, брутально",
+      "photo": "/images/services/clipper.jpg"
+    },
+    {
+      "id": 5,
+      "name": "Комбо: Стрижка + Борода",
+      "price": 2800,
+      "duration": 90,
+      "icon": "💎",
+      "description": "Полный сервис для настоящего джентльмена",
+      "photo": "/images/services/haircut.jpg"
+    },
+    {
+      "id": 6,
+      "name": "Отец + Сын",
+      "price": 3200,
+      "duration": 100,
+      "icon": "👔",
+      "description": "Семейные традиции в лучших руках",
+      "photo": "/images/services/shave.jpg"
+    },
+    {
+      "id": 7,
+      "name": "Камуфляж седины",
+      "price": 1500,
+      "duration": 45,
+      "icon": "🎨",
+      "description": "Естественный цвет за полчаса",
+      "photo": "/images/services/clipper.jpg"
+    },
+    {
+      "id": 8,
+      "name": "Черная маска + Уход",
+      "price": 1000,
+      "duration": 30,
+      "icon": "🎭",
+      "description": "Глубокое очищение лица и релакс",
+      "photo": "/images/services/beard.jpg"
+    }
+  ],
+  "masters": [
+    {
+      "id": 1,
+      "name": "Александр",
+      "title": "Top Barber",
+      "rating": 5,
+      "photo": "/images/masters/master1.jpg",
+      "chatId": null
+    },
+    {
+      "id": 2,
+      "name": "Дмитрий",
+      "title": "Master Barber",
+      "rating": 4.9,
+      "photo": "/images/masters/master2.jpg",
+      "chatId": null
+    },
+    {
+      "id": 3,
+      "name": "Артем",
+      "title": "Senior Barber",
+      "rating": 4.8,
+      "photo": "/images/masters/master3.jpg",
+      "chatId": null
+    },
+    {
+      "id": 4,
+      "name": "Виктор",
+      "title": "Barber",
+      "rating": 4.7,
+      "photo": "/images/masters/master4.jpg",
+      "chatId": null
+    }
+  ],
+  "bookings": [],
+  "adminPin": "1234",
+  "users": {}
+}
