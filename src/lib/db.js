@@ -25,11 +25,15 @@ class Database {
 
     save() {
         try {
-            // NOTE: On Vercel this will NOT persist. 
-            // This is a placeholder for Supabase/Mongo integration.
+            // Check if we are on Vercel (read-only env)
             fs.writeFileSync(DATA_FILE, JSON.stringify(this.data, null, 2));
+            console.log('DB saved successfully');
         } catch (error) {
-            console.error('Error saving DB:', error);
+            if (error.code === 'EROFS') {
+                console.warn('Vercel environment detected: Persistence is disabled for this session (Read-only FS). Use a cloud DB for full persistence.');
+            } else {
+                console.error('Error saving DB:', error);
+            }
         }
     }
 

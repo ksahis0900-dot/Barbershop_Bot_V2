@@ -153,13 +153,8 @@ const App: React.FC = () => {
 
   // --- Date Logic ---
   const getRussianDayHeader = (day: Date) => {
-    const shortNames: { [key: string]: string } = {
-      'mon': 'пн', 'tue': 'вт', 'wed': 'ср', 'thu': 'чт', 'fri': 'пт', 'sat': 'сб', 'sun': 'вс'
-    };
-    const engShort = format(day, 'eee').toLowerCase();
-    const short = shortNames[engShort] || format(day, 'ee', { locale: ru });
-    const full = format(day, 'EEEE', { locale: ru }).toLowerCase();
-    return `${short}-${full}`;
+    const days = ['вс', 'пн', 'вт', 'ср', 'чт', 'пт', 'сб'];
+    return days[day.getDay()].toUpperCase();
   };
 
   // --- Logic ---
@@ -202,11 +197,12 @@ const App: React.FC = () => {
     const bookingData = {
       id: Date.now(),
       services: selectedServices,
+      master: selectedMaster,
       masterId: selectedMaster.id,
-      masterName: selectedMaster.name,
       date: format(selectedDate, 'yyyy-MM-dd'),
       time: selectedTime,
       total: totalPrice,
+      duration: totalDuration,
       clientName: WebApp.initDataUnsafe?.user?.first_name || 'Клиент'
     };
 
