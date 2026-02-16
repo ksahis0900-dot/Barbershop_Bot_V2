@@ -1,6 +1,6 @@
 {
   "settings": {
-    "name": "Retro Barbershop",
+    "name": "Luxury Barbershop",
     "address": "ул. Центральная, 123",
     "phone": "+7 (999) 123-45-67",
     "working_hours": {
@@ -12,55 +12,55 @@
     {
       "id": 1,
       "name": "Мужская стрижка",
-      "price": 2000,
+      "price": 2500,
       "duration": 60,
       "icon": "✂️",
-      "description": "Классика и тренды в исполнении лучших мастеров",
+      "description": "Классика и тренды от профессионалов высокого уровня",
       "photo": "/images/services/haircut.jpg"
     },
     {
       "id": 2,
       "name": "Моделирование бороды",
-      "price": 1200,
+      "price": 1500,
       "duration": 40,
       "icon": "🧔",
-      "description": "Идеальные контуры и уход за бородой",
+      "description": "Четкие контуры и премиальный уход за бородой",
       "photo": "/images/services/beard.jpg"
     },
     {
       "id": 3,
-      "name": "Бритьё шеи и висков",
-      "price": 800,
-      "duration": 20,
+      "name": "Опасное бритьё",
+      "price": 2000,
+      "duration": 50,
       "icon": "🪒",
-      "description": "Чистота и свежесть контуров",
+      "description": "Традиционный ритуал с использованием горячих полотенец",
       "photo": "/images/services/shave.jpg"
     },
     {
       "id": 4,
-      "name": "Комплекс «Все включено»",
-      "price": 3000,
-      "duration": 90,
+      "name": "Королевский уход",
+      "price": 4500,
+      "duration": 120,
       "icon": "💎",
-      "description": "Стрижка + борода + патчи под глаза",
+      "description": "Стрижка, борода и SPA-процедуры для лица",
       "photo": "/images/services/combo.jpg"
     },
     {
       "id": 5,
       "name": "Отец + Сын",
-      "price": 3500,
-      "duration": 100,
+      "price": 4000,
+      "duration": 90,
       "icon": "👔",
-      "description": "Традиционный поход в барбершоп для двоих",
+      "description": "Прививаем стиль с самого раннего возраста",
       "photo": "/images/services/father-son.jpg"
     },
     {
       "id": 6,
-      "name": "Уход за лицом",
-      "price": 1500,
+      "name": "Детокс лица",
+      "price": 1800,
       "duration": 30,
       "icon": "🎭",
-      "description": "Очищение и увлажнение кожи для мужчин",
+      "description": "Очищение черной маской и увлажнение",
       "photo": "/images/services/treatment.jpg"
     }
   ],
@@ -68,8 +68,8 @@
     {
       "id": 1,
       "name": "Александр",
-      "title": "Top Barber",
-      "rating": 5,
+      "title": "Senior Barber",
+      "rating": 5.0,
       "photo": "/images/masters/m1.jpg"
     },
     {
@@ -82,7 +82,7 @@
     {
       "id": 3,
       "name": "Артем",
-      "title": "Senior Barber",
+      "title": "Creative Barber",
       "rating": 4.8,
       "photo": "/images/masters/m3.jpg"
     },

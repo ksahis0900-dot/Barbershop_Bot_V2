@@ -111,7 +111,8 @@ const App: React.FC = () => {
         setAdminPin('');
       }
     } catch (err) {
-      WebApp.showAlert('Ошибка авторизации');
+      WebApp.showAlert('Ошибка авторизации. Проверьте подключение.');
+      setAdminPin('');
     }
   };
 
@@ -122,6 +123,9 @@ const App: React.FC = () => {
 
   // --- Admin CRUD ---
   const saveCollection = async (collection: 'services' | 'masters', newData: any[]) => {
+    // Update local state immediately for instant feedback
+    setData(prev => ({ ...prev, [collection]: newData }));
+
     try {
       await axios.post('/api/data', {
         action: 'save_collection',
@@ -129,20 +133,33 @@ const App: React.FC = () => {
         data: newData,
         pin: adminPin
       });
-      fetchData();
+      // Optionally re-fetch to ensure sync, but keep local state for Vercel persistence mock
+      // fetchData(); 
       setEditingItem(null);
+      WebApp.showAlert('Сохранено локально');
     } catch (err) {
-      WebApp.showAlert('Ошибка сохранения');
+      WebApp.showAlert('Ошибка сохранения на сервере');
     }
   };
 
   const deleteItem = (collection: 'services' | 'masters', id: string | number) => {
-    WebApp.showConfirm('Вы уверены?', (ok) => {
+    WebApp.showConfirm('Вы уверены, что хотите удалить?', (ok) => {
       if (ok) {
         const filtered = (data as any)[collection].filter((item: any) => item.id !== id);
         saveCollection(collection, filtered);
       }
     });
+  };
+
+  // --- Date Logic ---
+  const getRussianDayHeader = (day: Date) => {
+    const shortNames: { [key: string]: string } = {
+      'mon': 'пн', 'tue': 'вт', 'wed': 'ср', 'thu': 'чт', 'fri': 'пт', 'sat': 'сб', 'sun': 'вс'
+    };
+    const engShort = format(day, 'eee').toLowerCase();
+    const short = shortNames[engShort] || format(day, 'ee', { locale: ru });
+    const full = format(day, 'EEEE', { locale: ru }).toLowerCase();
+    return `${short}-${full}`;
   };
 
   // --- Logic ---
@@ -337,7 +354,7 @@ const App: React.FC = () => {
                 return (
                   <div key={i} onClick={() => { setSelectedDate(day); setSelectedTime(null); }} className={`date-item min-w-[100px] h-[110px] ${active ? 'active' : ''}`}>
                     <span className="text-[10px] font-black uppercase tracking-widest opacity-50 mb-2">
-                      {format(day, 'EEEE', { locale: ru })}
+                      {getRussianDayHeader(day)}
                     </span>
                     <span className="text-2xl font-black">{format(day, 'd')}</span>
                   </div>
@@ -346,7 +363,7 @@ const App: React.FC = () => {
             </div>
 
             <div className="mb-6">
-              <div className="text-secondary text-[11px] font-black uppercase tracking-[3px] mb-4">
+              <div className="text-secondary text-[11px] font-black uppercase tracking-[3px] mb-4 text-center">
                 {format(selectedDate, 'd MMMM yyyy года', { locale: ru })}
               </div>
               <div className="time-grid">
@@ -379,7 +396,7 @@ const App: React.FC = () => {
               </div>
               <h2 className="text-3xl font-black mb-4">{selectedTime}</h2>
               <p className="text-secondary font-bold uppercase tracking-widest text-[11px] mb-10">
-                {format(selectedDate, 'EEEE, d MMMM', { locale: ru })}
+                {format(selectedDate, 'EEEE, d MMMM yyyy года', { locale: ru })}
               </p>
 
               <div className="space-y-4 text-left border-t border-white/10 pt-8">

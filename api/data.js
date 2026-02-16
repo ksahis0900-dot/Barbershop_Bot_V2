@@ -31,9 +31,11 @@ module.exports = async (request, response) => {
 
             // Auth action
             if (action === 'admin_auth') {
+                console.log('Admin auth attempt with PIN:', pin);
                 if (pin === db.data.adminPin) {
-                    return response.status(200).json({ success: true });
+                    return response.status(200).json({ success: true, message: 'Authenticated' });
                 }
+                console.log('Auth failed: Expected', db.data.adminPin, 'Got', pin);
                 return response.status(401).json({ success: false, message: 'Invalid PIN' });
             }
 
