@@ -2,9 +2,6 @@ import React, { useState, useEffect } from 'react';
 import WebApp from '@twa-dev/sdk';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Scissors,
-  MapPin,
-  Phone,
   Clock,
   CheckCircle2,
   ChevronRight,
