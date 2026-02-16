@@ -16,7 +16,7 @@
       "duration": 60,
       "icon": "✂️",
       "description": "Классика и тренды от профессионалов высокого уровня",
-      "photo": "/images/services/haircut.jpg"
+      "photo": "/images/services/style-cut.jpg"
     },
     {
       "id": 2,
@@ -25,7 +25,7 @@
       "duration": 40,
       "icon": "🧔",
       "description": "Четкие контуры и премиальный уход за бородой",
-      "photo": "/images/services/beard.jpg"
+      "photo": "/images/services/beard-trim.jpg"
     },
     {
       "id": 3,
@@ -34,7 +34,7 @@
       "duration": 50,
       "icon": "🪒",
       "description": "Традиционный ритуал с использованием горячих полотенец",
-      "photo": "/images/services/shave.jpg"
+      "photo": "/images/services/royal-shave.jpg"
     },
     {
       "id": 4,
@@ -43,7 +43,7 @@
       "duration": 120,
       "icon": "💎",
       "description": "Стрижка, борода и SPA-процедуры для лица",
-      "photo": "/images/services/combo.jpg"
+      "photo": "/images/services/full-service.jpg"
     },
     {
       "id": 5,
@@ -52,7 +52,7 @@
       "duration": 90,
       "icon": "👔",
       "description": "Прививаем стиль с самого раннего возраста",
-      "photo": "/images/services/father-son.jpg"
+      "photo": "/images/services/father-son-premium.jpg"
     },
     {
       "id": 6,
@@ -61,7 +61,7 @@
       "duration": 30,
       "icon": "🎭",
       "description": "Очищение черной маской и увлажнение",
-      "photo": "/images/services/treatment.jpg"
+      "photo": "/images/services/face-detox.jpg"
     }
   ],
   "masters": [

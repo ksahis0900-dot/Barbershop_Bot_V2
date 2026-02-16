@@ -150,9 +150,20 @@ const App: React.FC = () => {
 
   // --- Date Logic ---
   const getRussianDayHeader = (day: Date) => {
-    const days = ['вс', 'пн', 'вт', 'ср', 'чт', 'пт', 'сб'];
-    return days[day.getDay()].toUpperCase();
+    const standardDays = [
+      { short: 'вс', full: 'воскресенье' },
+      { short: 'пн', full: 'понедельник' },
+      { short: 'вт', full: 'вторник' },
+      { short: 'ср', full: 'среда' },
+      { short: 'чт', full: 'четверг' },
+      { short: 'пт', full: 'пятница' },
+      { short: 'сб', full: 'суббота' }
+    ];
+    const dayInfo = standardDays[day.getDay()];
+    return `${dayInfo.short.toUpperCase()}-${dayInfo.full}`;
   };
+
+  const APP_VERSION = "2.2.0-FINAL-FINAL";
 
   // --- Logic ---
   const totalPrice = selectedServices.reduce((sum, s) => sum + s.price, 0);
@@ -591,6 +602,10 @@ const App: React.FC = () => {
           </motion.div>
         )}
       </AnimatePresence>
+
+      <div className="py-8 text-center opacity-10 text-[8px] font-black uppercase tracking-widest pointer-events-none">
+        {APP_VERSION}
+      </div>
       <style>{`
         .admin-input {
           width: 100%;
