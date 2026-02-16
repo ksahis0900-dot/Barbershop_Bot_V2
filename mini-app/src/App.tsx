@@ -150,20 +150,11 @@ const App: React.FC = () => {
 
   // --- Date Logic ---
   const getRussianDayHeader = (day: Date) => {
-    const standardDays = [
-      { short: 'вс', full: 'воскресенье' },
-      { short: 'пн', full: 'понедельник' },
-      { short: 'вт', full: 'вторник' },
-      { short: 'ср', full: 'среда' },
-      { short: 'чт', full: 'четверг' },
-      { short: 'пт', full: 'пятница' },
-      { short: 'сб', full: 'суббота' }
-    ];
-    const dayInfo = standardDays[day.getDay()];
-    return `${dayInfo.short.toUpperCase()}-${dayInfo.full}`;
+    const days = ['вс', 'пн', 'вт', 'ср', 'чт', 'пт', 'сб'];
+    return days[day.getDay()].toUpperCase();
   };
 
-  const APP_VERSION = "2.2.0-FINAL-FINAL";
+  const APP_VERSION = "2.3.0-CALENDAR-FIX";
 
   // --- Logic ---
   const totalPrice = selectedServices.reduce((sum, s) => sum + s.price, 0);
