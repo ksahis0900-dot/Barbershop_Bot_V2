@@ -1,15 +1,20 @@
 const bot = require('../src/index');
 
-export default async function handler(request, response) {
+module.exports = async (request, response) => {
     if (request.method === 'POST') {
         try {
             console.log('Incoming update:', JSON.stringify(request.body));
+
+            if (!request.body || Object.keys(request.body).length === 0) {
+                console.warn('Empty request body received');
+                return response.status(200).send('Empty body');
+            }
 
             // Process the update from Telegram
             bot.processUpdate(request.body);
 
             // Wait for a short duration to ensure bot handles the message before termination
-            await new Promise(resolve => setTimeout(resolve, 1500));
+            await new Promise(resolve => setTimeout(resolve, 2000));
 
             response.status(200).send('OK');
         } catch (error) {
@@ -19,4 +24,4 @@ export default async function handler(request, response) {
     } else {
         response.status(200).send('Bot is running');
     }
-}
+};

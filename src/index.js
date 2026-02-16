@@ -11,9 +11,13 @@ const PORT = process.env.PORT || 3000;
 // Initialize bot
 let bot;
 
+if (!TOKEN) {
+    console.error('❌ CRITICAL ERROR: BOT_TOKEN is missing from environment variables!');
+}
+
 if (process.env.VERCEL) {
     // Serverless mode (Webhook)
-    bot = new SafeBot(TOKEN);
+    bot = new SafeBot(TOKEN || 'dummy');
     // Webhook will be handled by the API route
 } else {
     // Local mode (Polling)
