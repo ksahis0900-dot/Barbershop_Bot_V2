@@ -1,19 +1,15 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap');
 
 :root {
-  --tg-theme-bg-color: #0f172a;
-  --tg-theme-text-color: #f8fafc;
-  --tg-theme-hint-color: #94a3b8;
-  --tg-theme-link-color: #38bdf8;
-  --tg-theme-button-color: #38bdf8;
-  --tg-theme-button-text-color: #ffffff;
-  --tg-theme-secondary-bg-color: #1e293b;
-
-  --accent-gold: #fbbf24;
-  --accent-gold-dark: #b45309;
-  --bg-deep: #0f172a;
-  --card-bg: rgba(30, 41, 59, 0.7);
-  --glass-border: rgba(255, 255, 255, 0.1);
+  --bg-color: #0c0d10;
+  --panel-bg: rgba(26, 27, 34, 0.8);
+  --accent-gold: #c5a676;
+  --accent-gold-soft: #d4bf9c;
+  --text-primary: #ffffff;
+  --text-secondary: #9ea0a5;
+  --border-color: rgba(197, 166, 118, 0.15);
+  --gradient-gold: linear-gradient(135deg, #c5a676 0%, #8e734c 100%);
+  --glass-effect: blur(20px) saturate(180%);
 }
 
 * {
@@ -21,65 +17,133 @@
   padding: 0;
   box-sizing: border-box;
   -webkit-tap-highlight-color: transparent;
+  font-family: 'Outfit', sans-serif;
 }
 
 body {
-  font-family: 'Inter', sans-serif;
-  background-color: var(--tg-theme-bg-color);
-  color: var(--tg-theme-text-color);
-  line-height: 1.5;
+  background-color: var(--bg-color);
+  color: var(--text-primary);
+  line-height: 1.6;
   overflow-x: hidden;
   user-select: none;
 }
 
 #root {
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+  padding-bottom: 120px;
 }
 
-.glass-card {
-  background: var(--card-bg);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid var(--glass-border);
-  border-radius: 16px;
-  overflow: hidden;
+.logo-container {
+  padding: 40px 0 20px;
+  text-align: center;
 }
 
-.btn-primary {
-  background: linear-gradient(135deg, var(--accent-gold), var(--accent-gold-dark));
-  color: #000;
-  border: none;
-  padding: 12px 24px;
-  border-radius: 12px;
-  font-weight: 600;
-  transition: all 0.3s ease;
-  width: 100%;
-}
-
-.btn-primary:active {
-  transform: scale(0.98);
-  opacity: 0.9;
-}
-
-.gradient-text {
-  background: linear-gradient(135deg, var(--accent-gold), #fff);
+.logo-text {
+  font-family: 'Playfair Display', serif;
+  font-size: 42px;
+  font-weight: 700;
+  letter-spacing: 4px;
+  background: var(--gradient-gold);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
+  text-transform: uppercase;
 }
 
-/* Custom Scrollbar */
-::-webkit-scrollbar {
-  width: 4px;
+.logo-subtitle {
+  font-size: 10px;
+  letter-spacing: 6px;
+  color: var(--accent-gold);
+  text-transform: uppercase;
+  margin-top: -5px;
+  font-weight: 500;
 }
 
-::-webkit-scrollbar-track {
-  background: transparent;
+.glass-card {
+  background: var(--panel-bg);
+  backdrop-filter: var(--glass-effect);
+  -webkit-backdrop-filter: var(--glass-effect);
+  border: 1px solid var(--border-color);
+  border-radius: 24px;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  overflow: hidden;
+  transition: transform 0.3s ease, border-color 0.3s ease;
 }
 
-::-webkit-scrollbar-thumb {
-  background: var(--glass-border);
-  border-radius: 10px;
+.glass-card.selected {
+  border-color: var(--accent-gold);
+  background: rgba(197, 166, 118, 0.1);
+}
+
+.btn-luxury {
+  background: var(--gradient-gold);
+  color: #000;
+  border: none;
+  padding: 16px 32px;
+  border-radius: 18px;
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 10px 20px rgba(197, 166, 118, 0.2);
+  width: 100%;
+}
+
+.btn-luxury:active {
+  transform: scale(0.96);
+  box-shadow: 0 5px 10px rgba(197, 166, 118, 0.2);
+}
+
+.sticky-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 24px;
+  background: linear-gradient(to top, var(--bg-color) 80%, transparent);
+  z-index: 1000;
+}
+
+.category-badge {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 6px 12px;
+  border-radius: 30px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--accent-gold-soft);
+  text-transform: uppercase;
+}
+
+.price-text {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--accent-gold);
+}
+
+.duration-text {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade {
+  animation: fadeIn 0.6s ease-out forwards;
+}
+
+.service-emoji {
+  font-size: 24px;
+  margin-right: 15px;
 }
