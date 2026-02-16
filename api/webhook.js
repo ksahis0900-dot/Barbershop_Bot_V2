@@ -1,6 +1,9 @@
 const bot = require('../src/index');
 
+const VERSION = '1.0.3';
+
 module.exports = async (request, response) => {
+    console.log(`[Webhook v${VERSION}] Method: ${request.method}`);
     if (request.method === 'POST') {
         try {
             console.log('Incoming update:', JSON.stringify(request.body));

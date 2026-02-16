@@ -27,9 +27,10 @@ if (process.env.VERCEL) {
 
 // ====== HANDLERS ======
 
-bot.onText(/\/start/, (msg) => {
+bot.onText(/\/start/, async (msg) => {
     const chatId = msg.chat.id;
     const username = msg.from.username || msg.from.first_name;
+    console.log(`[/start] Received from ${username} (${chatId})`);
 
     const welcomeText = `
 👋 Привет, ${username}!
@@ -55,7 +56,8 @@ bot.onText(/\/start/, (msg) => {
         }
     };
 
-    bot.safeSendMessage(chatId, welcomeText, options);
+    await bot.safeSendMessage(chatId, welcomeText, options);
+    console.log(`[/start] Response sent to ${chatId}`);
 });
 
 // Handle data from Web App
