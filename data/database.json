@@ -34,7 +34,7 @@
       "duration": 50,
       "icon": "🪒",
       "description": "Распаривание и бритье опасной бритвой",
-      "photo": "/images/services/shave.jpg"
+      "photo": "/images/services/beard.jpg"
     },
     {
       "id": 4,
@@ -69,7 +69,7 @@
       "price": 1500,
       "duration": 45,
       "icon": "🎨",
-      "description": "Естественное тонирование волос за 15 минут",
+      "description": "Естественный цвет за полчаса",
       "photo": "/images/services/color.jpg"
     },
     {
