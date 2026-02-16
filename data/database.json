@@ -15,7 +15,7 @@
       "price": 2000,
       "duration": 60,
       "icon": "✂️",
-      "description": "Классика и тренды в одном флаконе",
+      "description": "Классическая мужская стрижка ножницами и машинкой",
       "photo": "/images/services/haircut.jpg"
     },
     {
@@ -24,7 +24,7 @@
       "price": 1200,
       "duration": 40,
       "icon": "🧔",
-      "description": "Идеальные контуры и премиальный уход",
+      "description": "Придание формы бороде и уход за кожей лица",
       "photo": "/images/services/beard.jpg"
     },
     {
@@ -33,16 +33,16 @@
       "price": 1800,
       "duration": 50,
       "icon": "🪒",
-      "description": "Распаривание и бритье опасным лезвием",
+      "description": "Распаривание и бритье опасной бритвой",
       "photo": "/images/services/shave.jpg"
     },
     {
       "id": 4,
-      "name": "Стрижка под машинку",
+      "name": "Стрижка машиной",
       "price": 1000,
       "duration": 30,
       "icon": "🔌",
-      "description": "Быстро, четко, брутально",
+      "description": "Короткая стрижка одной или двумя насадками",
       "photo": "/images/services/clipper.jpg"
     },
     {
@@ -51,17 +51,17 @@
       "price": 2800,
       "duration": 90,
       "icon": "💎",
-      "description": "Полный сервис для настоящего джентльмена",
-      "photo": "/images/services/haircut.jpg"
+      "description": "Полный комплекс услуг для вашего стиля",
+      "photo": "/images/services/combo.jpg"
     },
     {
       "id": 6,
-      "name": "Отец + Сын",
+      "name": "Отец + Сын (с 5 лет)",
       "price": 3200,
       "duration": 100,
       "icon": "👔",
-      "description": "Семейные традиции в лучших руках",
-      "photo": "/images/services/shave.jpg"
+      "description": "Совместный поход в барбершоп для отца и сына",
+      "photo": "/images/services/father-son.jpg"
     },
     {
       "id": 7,
@@ -69,8 +69,8 @@
       "price": 1500,
       "duration": 45,
       "icon": "🎨",
-      "description": "Естественный цвет за полчаса",
-      "photo": "/images/services/clipper.jpg"
+      "description": "Естественное тонирование волос за 15 минут",
+      "photo": "/images/services/color.jpg"
     },
     {
       "id": 8,
@@ -78,8 +78,8 @@
       "price": 1000,
       "duration": 30,
       "icon": "🎭",
-      "description": "Глубокое очищение лица и релакс",
-      "photo": "/images/services/beard.jpg"
+      "description": "Глубокое очищение и увлажнение кожи",
+      "photo": "/images/services/mask.jpg"
     }
   ],
   "masters": [

@@ -24,6 +24,11 @@ module.exports = async (request, response) => {
         }
 
         if (request.method === 'POST') {
+            if (action === 'add_booking') {
+                db.addBooking(data);
+                return response.status(200).json({ success: true });
+            }
+
             // Actions requiring auth 
             if (action === 'admin_auth') {
                 if (pin === db.data.adminPin) {
