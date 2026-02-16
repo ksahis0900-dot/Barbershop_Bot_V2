@@ -9,9 +9,13 @@ class Database {
     }
 
     load() {
+        console.log('Loading DB from:', DATA_FILE);
         try {
             if (fs.existsSync(DATA_FILE)) {
+                console.log('DB file found!');
                 return JSON.parse(fs.readFileSync(DATA_FILE, 'utf8'));
+            } else {
+                console.error('DB file NOT found at', DATA_FILE);
             }
         } catch (error) {
             console.error('Error loading DB:', error);
