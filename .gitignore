@@ -7,7 +7,13 @@ package-lock.json
 
 # Data
 data/*.json
+# database.json should be tracked for this mock setup
+!data/database.json
 
+# Builds
+mini-app/dist
+dist
+build
 # Logs
 logs
 *.log
