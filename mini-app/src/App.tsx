@@ -4,15 +4,12 @@ import { motion, AnimatePresence } from 'framer-motion';
 import axios from 'axios';
 import {
   CheckCircle2,
-  ChevronRight,
   Award,
   Settings,
   Plus,
   Trash2,
-  ChevronLeft,
   X,
   Clock,
-  MapPin,
   Edit2,
   LogOut,
   Save,
@@ -359,7 +356,7 @@ const App: React.FC = () => {
             </div>
 
             <div className="mb-6">
-              <div className="text-secondary text-[11px] font-black uppercase tracking-[3px] mb-4 text-center">
+              <div className="bg-white/5 border border-white/10 rounded-2xl py-4 px-6 text-accent-gold text-[13px] font-black uppercase tracking-[3px] mb-8 text-center shadow-xl">
                 {format(selectedDate, 'd MMMM yyyy года', { locale: ru })}
               </div>
               <div className="time-grid">
@@ -458,7 +455,7 @@ const App: React.FC = () => {
                   onClick={() => { setAdminTab(tab as any); setEditingItem(null); }}
                   className={`px-6 py-3 rounded-2xl text-[10px] font-black uppercase tracking-[2px] whitespace-nowrap border-2 transition-all ${adminTab === tab ? 'bg-accent-gold border-accent-gold text-black shadow-[0_5px_15px_rgba(197,166,118,0.3)]' : 'bg-white/5 border-white/10 text-secondary'}`}
                 >
-                  {tab === 'bookings' ? 'ЗАПИСИ' : tab === 'services' ? 'УСЛУГИ' : tab === 'masters' ? 'МАСТЕРА' : 'ОФИС'}
+                  {tab === 'bookings' ? 'ЗАПИСИ' : tab === 'services' ? 'УСЛУГИ' : tab === 'masters' ? 'МАСТЕРА' : 'НАСТРОЙКИ'}
                 </button>
               ))}
             </div>
