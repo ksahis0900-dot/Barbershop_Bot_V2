@@ -5,10 +5,7 @@ import axios from 'axios';
 import {
   CheckCircle2,
   ChevronRight,
-  User,
-  Sparkles,
   Award,
-  Calendar as CalendarIcon,
   Settings,
   Plus,
   Trash2,
@@ -177,7 +174,6 @@ const App: React.FC = () => {
     };
 
     try {
-      // Direct POST to API to ensure it hits the "Admin Panel" database
       await axios.post('/api/data', {
         action: 'add_booking',
         data: bookingData
@@ -248,7 +244,7 @@ const App: React.FC = () => {
                     </div>
                   </div>
                   {selectedServices.find(x => x.id === s.id) && (
-                    <div className="absolute top-4 right-4 bg-accent-gold text-black rounded-full p-1">
+                    <div className="absolute top-4 right-4 bg-accent-gold text-black rounded-full p-1 border-2 border-accent-gold">
                       <CheckCircle2 size={24} />
                     </div>
                   )}
