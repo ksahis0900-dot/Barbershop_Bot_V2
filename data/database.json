@@ -16,7 +16,7 @@
       "duration": 60,
       "icon": "✂️",
       "description": "Полный цикл: мытье, стрижка, укладка и консультация по стилю.",
-      "photo": "/images/services/style-cut.jpg",
+      "photo": "/images/services/mens-haircut.jpg",
       "subServices": [
         {
           "name": "Undercut (Андеркат)",
