@@ -16,7 +16,7 @@
       "duration": 60,
       "icon": "✂️",
       "description": "Premium grooming for the modern gentleman",
-      "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?q=80&w=800&auto=format&fit=crop"
+      "photo": "/images/services/style-cut.jpg"
     },
     {
       "id": 2,
@@ -25,7 +25,7 @@
       "duration": 40,
       "icon": "🧔",
       "description": "Precision trimming and luxury oil treatment",
-      "photo": "https://images.unsplash.com/photo-1621605815841-2cd6180bf378?q=80&w=800&auto=format&fit=crop"
+      "photo": "/images/services/beard-trim.jpg"
     },
     {
       "id": 3,
@@ -34,7 +34,7 @@
       "duration": 50,
       "icon": "🪒",
       "description": "Traditional hot towel and straight razor ritual",
-      "photo": "https://images.unsplash.com/photo-1599351431247-f577f5d38edc?q=80&w=800&auto=format&fit=crop"
+      "photo": "/images/services/royal-shave.jpg"
     },
     {
       "id": 4,
@@ -43,7 +43,7 @@
       "duration": 120,
       "icon": "💎",
       "description": "The ultimate grooming experience",
-      "photo": "https://images.unsplash.com/photo-1512690199145-8c7cd19a8ce9?q=80&w=800&auto=format&fit=crop"
+      "photo": "/images/services/full-service.jpg"
     },
     {
       "id": 5,
@@ -52,7 +52,7 @@
       "duration": 90,
       "icon": "👔",
       "description": "Legacy and style shared across generations",
-      "photo": "https://images.unsplash.com/photo-1512290923902-8a9f81dc20df?q=80&w=800&auto=format&fit=crop"
+      "photo": "/images/services/father-son-premium.jpg"
     },
     {
       "id": 6,
@@ -61,7 +61,7 @@
       "duration": 30,
       "icon": "🎭",
       "description": "Deep cleaning and hydration",
-      "photo": "https://images.unsplash.com/photo-1515377666659-7178f48606ce?q=80&w=800&auto=format&fit=crop"
+      "photo": "/images/services/face-detox.jpg"
     }
   ],
   "masters": [
@@ -70,31 +70,44 @@
       "name": "Александр",
       "title": "Senior Barber",
       "rating": 5.0,
-      "photo": "https://images.unsplash.com/photo-1593702288056-7847bc24f997?auto=format&fit=crop&q=80&w=400"
+      "photo": "/images/masters/m1.jpg"
     },
     {
       "id": 2,
       "name": "Дмитрий",
       "title": "Master Barber",
       "rating": 4.9,
-      "photo": "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=400"
+      "photo": "/images/masters/m2.jpg"
     },
     {
       "id": 3,
       "name": "Артем",
       "title": "Creative Barber",
       "rating": 4.8,
-      "photo": "https://images.unsplash.com/photo-1512484776495-a09d92e87c3b?auto=format&fit=crop&q=80&w=400"
+      "photo": "/images/masters/m3.jpg"
     },
     {
       "id": 4,
       "name": "Виктор",
       "title": "Barber",
       "rating": 4.7,
-      "photo": "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&q=80&w=400"
+      "photo": "/images/masters/m4.jpg"
     }
   ],
-  "bookings": [],
+  "bookings": [
+    {
+      "id": 1,
+      "userId": "test",
+      "clientName": "Клиент",
+      "masterName": "Александр",
+      "services": [
+        "TOP-LEVEL CUT"
+      ],
+      "date": "2026-02-17",
+      "time": "10:00",
+      "total": 2500
+    }
+  ],
   "adminPin": "1234",
   "users": {}
 }

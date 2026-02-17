@@ -43,10 +43,11 @@ body {
 
 .container {
   max-width: 500px;
-  /* Tighter for mobile feel */
   margin: 0 auto;
   width: 100%;
-  padding: 0 20px;
+  padding: 0 16px;
+  /* Reduced for better mobile fit */
+  box-sizing: border-box;
 }
 
 /* Typography & Logo */
@@ -58,7 +59,8 @@ body {
 
 .logo-text {
   font-family: 'Playfair Display', serif;
-  font-size: clamp(28px, 8vw, 36px);
+  font-size: 24px;
+  /* Fixed for stability */
   font-weight: 900;
   letter-spacing: 1px;
   background: var(--gradient-gold);
@@ -66,8 +68,8 @@ body {
   background-clip: text;
   -webkit-text-fill-color: transparent;
   text-transform: uppercase;
-  line-height: 0.9;
-  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.5));
+  line-height: 1;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.4));
 }
 
 .logo-subtitle {

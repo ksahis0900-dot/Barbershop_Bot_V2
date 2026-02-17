@@ -132,6 +132,20 @@ const App: React.FC = () => {
     }
   };
 
+  const saveSettings = async (newSettings: any) => {
+    setData(prev => ({ ...prev, settings: newSettings }));
+    try {
+      await axios.post('/api/data', {
+        action: 'update_settings',
+        data: newSettings,
+        pin: adminPin
+      });
+      WebApp.showAlert('Настройки сохранены');
+    } catch (err) {
+      WebApp.showAlert('Ошибка сохранения');
+    }
+  };
+
   const deleteItem = (collection: 'services' | 'masters', id: string | number) => {
     WebApp.showConfirm('Удалить?', (ok) => {
       if (ok) {
@@ -154,7 +168,7 @@ const App: React.FC = () => {
     });
   }, [data.bookings]);
 
-  const APP_VERSION = "2.5.6-STABLE";
+  const APP_VERSION = "2.5.7-STABLE";
 
   const getRussianDayHeader = (day: Date) => {
     const days = ['вс', 'пн', 'вт', 'ср', 'чт', 'пт', 'сб'];
@@ -241,17 +255,17 @@ const App: React.FC = () => {
   return (
     <div className="container min-h-screen flex flex-col pb-32">
       {/* Header */}
-      <div className="px-6 py-8 flex justify-between items-center bg-black/95 backdrop-blur-2xl sticky top-0 z-40 border-b border-white/5">
-        <div className="flex flex-col">
-          <div className="flex items-center gap-2">
-            <h1 className="logo-text">{data.settings?.name?.split(' ')[0]}</h1>
-            <div className="bg-accent-gold/10 px-1.5 py-0.5 rounded border border-accent-gold/20">
+      <div className="px-5 py-6 flex justify-between items-center bg-black/95 backdrop-blur-2xl sticky top-0 z-40 border-b border-white/5 flex-nowrap min-w-0">
+        <div className="flex flex-col min-w-0 flex-1">
+          <div className="flex items-center gap-2 overflow-hidden">
+            <h1 className="logo-text truncate">{data.settings?.name?.split(' ')[0]}</h1>
+            <div className="bg-accent-gold/10 px-1.5 py-0.5 rounded border border-accent-gold/20 flex-shrink-0">
               <span className="text-[6px] text-accent-gold font-black tracking-tighter">{APP_VERSION}</span>
             </div>
           </div>
-          <div className="logo-subtitle">{data.settings?.name?.split(' ').slice(1).join(' ')}</div>
+          <div className="logo-subtitle truncate">{data.settings?.name?.split(' ').slice(1).join(' ')}</div>
         </div>
-        <div className="flex gap-3">
+        <div className="flex gap-2.5 flex-shrink-0 ml-4">
           <button
             onClick={() => setStep(step === 'my_bookings' ? 'services' : 'my_bookings')}
             className={`header-btn ${step === 'my_bookings' ? 'active' : ''}`}
@@ -326,7 +340,7 @@ const App: React.FC = () => {
         )}
 
         {step === 'masters' && (
-          <motion.div key="masters" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="p-6">
+          <motion.div key="masters" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-6">
             <h2 className="text-2xl font-bold mb-10">Выберите мастера</h2>
             <div className="space-y-6">
               {data.masters.map(m => (
@@ -510,6 +524,46 @@ const App: React.FC = () => {
               </div>
             )}
 
+            {adminTab === 'masters' && (
+              <div className="space-y-4">
+                <button onClick={() => setEditingItem({ id: Date.now(), name: '', title: 'Barber', rating: 5.0, photo: '' })} className="w-full py-4 border border-dashed border-accent-gold/30 rounded-2xl text-[10px] font-black uppercase tracking-widest text-accent-gold">Добавить мастера</button>
+                {data.masters.map(m => (
+                  <div key={m.id} className="glass-card p-3 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <img src={m.photo} className="w-10 h-10 rounded-lg object-cover" />
+                      <div>
+                        <div className="font-bold text-xs">{m.name}</div>
+                        <div className="text-[8px] opacity-40 uppercase">{m.title}</div>
+                      </div>
+                    </div>
+                    <div className="flex gap-2">
+                      <button onClick={() => setEditingItem(m)} className="p-2 bg-white/5 rounded-lg text-secondary"><Edit2 size={14} /></button>
+                      <button onClick={() => deleteItem('masters', m.id)} className="p-2 bg-white/5 rounded-lg text-red-500/50"><Trash2 size={14} /></button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {adminTab === 'settings' && (
+              <div className="space-y-4">
+                <div className="glass-card p-6 space-y-4">
+                  <div>
+                    <label className="text-[8px] font-black uppercase tracking-widest opacity-40 mb-2 block">Название барбершопа</label>
+                    <input className="admin-input" value={data.settings?.name} onChange={e => saveSettings({ ...data.settings, name: e.target.value })} />
+                  </div>
+                  <div>
+                    <label className="text-[8px] font-black uppercase tracking-widest opacity-40 mb-2 block">Адрес</label>
+                    <input className="admin-input" value={data.settings?.address} onChange={e => saveSettings({ ...data.settings, address: e.target.value })} />
+                  </div>
+                  <div>
+                    <label className="text-[8px] font-black uppercase tracking-widest opacity-40 mb-2 block">Телефон</label>
+                    <input className="admin-input" value={data.settings?.phone} onChange={e => saveSettings({ ...data.settings, phone: e.target.value })} />
+                  </div>
+                </div>
+              </div>
+            )}
+
             {editingItem && (
               <Modal title="Редактировать" onClose={() => setEditingItem(null)}>
                 <div className="space-y-3">
@@ -528,7 +582,7 @@ const App: React.FC = () => {
         )}
 
         {step === 'my_bookings' && (
-          <motion.div key="my_bookings" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="p-6 mb-20">
+          <motion.div key="my_bookings" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-6 mb-20">
             <h2 className="text-2xl font-bold mb-10">Мои записи</h2>
             {userBookings.length === 0 ? (
               <div className="py-32 text-center">
@@ -540,8 +594,8 @@ const App: React.FC = () => {
             ) : (
               <div className="space-y-6">
                 {userBookings.map(b => (
-                  <div key={b.id} className="glass-card p-6 border-l-4 border-accent-gold">
-                    <div className="flex justify-between items-start">
+                  <div key={b.id} className="glass-card p-6 border-l-[6px] border-accent-gold">
+                    <div className="flex justify-between items-start pl-2">
                       <div>
                         <div className="text-2xl font-black text-white mb-1">{b.time}</div>
                         <div className="status-badge py-1 px-3 text-[9px]">{format(parse(b.date, 'yyyy-MM-dd', new Date()), 'd MMMM', { locale: ru })}</div>
