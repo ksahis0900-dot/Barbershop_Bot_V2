@@ -5,7 +5,6 @@
   --bg-deep: #050505;
   --panel-bg: rgba(20, 21, 26, 0.85);
   --accent-gold: #d4af37;
-  /* More vibrant gold */
   --accent-gold-glow: #ffdf00;
   --accent-gold-soft: #c5a676;
   --text-primary: #ffffff;
@@ -41,28 +40,31 @@ body {
   flex-direction: column;
 }
 
-.container {
+.app-shell {
   max-width: 500px;
   margin: 0 auto;
   width: 100%;
   padding: 0 16px;
-  /* Reduced for better mobile fit */
   box-sizing: border-box;
+  overflow-x: hidden;
 }
 
-/* Typography & Logo */
-.logo-container {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+.premium-header {
+  display: flex !important;
+  flex-direction: row !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  padding: 24px 0 !important;
+  width: 100%;
+  box-sizing: border-box;
+  background: transparent;
 }
 
 .logo-text {
   font-family: 'Playfair Display', serif;
-  font-size: 24px;
-  /* Fixed for stability */
+  font-size: 20px;
   font-weight: 900;
-  letter-spacing: 1px;
+  letter-spacing: 0.5px;
   background: var(--gradient-gold);
   -webkit-background-clip: text;
   background-clip: text;
@@ -82,7 +84,6 @@ body {
   opacity: 0.8;
 }
 
-/* Premium Cards */
 .glass-card {
   background: var(--panel-bg);
   backdrop-filter: var(--glass-effect);
@@ -102,18 +103,13 @@ body {
   transform: translateY(-4px) scale(1.02);
 }
 
-.glass-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 100%;
-  background: linear-gradient(225deg, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
-  pointer-events: none;
+.booking-card {
+  padding: 24px !important;
+  padding-left: 32px !important;
+  border-left: 6px solid var(--accent-gold) !important;
+  border-radius: 22px !important;
 }
 
-/* Service Grid Styles */
 .service-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -198,7 +194,6 @@ body {
   backdrop-filter: blur(10px);
 }
 
-/* Header Buttons */
 .header-btn {
   width: 48px;
   height: 48px;
@@ -219,7 +214,6 @@ body {
   box-shadow: 0 8px 25px rgba(212, 175, 55, 0.4);
 }
 
-/* Luxury Button */
 .btn-luxury {
   background: var(--gradient-gold);
   color: #000000;
@@ -264,15 +258,14 @@ body {
   box-shadow: 0 5px 15px rgba(212, 175, 55, 0.2);
 }
 
-/* Time/Date Scrollers */
 .date-scroller {
   display: flex;
   gap: 12px;
   overflow-x: auto;
   padding: 10px 0 24px;
-  margin: 0 -20px;
-  padding-left: 20px;
-  padding-right: 20px;
+  margin: 0 -16px;
+  padding-left: 16px;
+  padding-right: 16px;
 }
 
 .date-item {
@@ -313,32 +306,31 @@ body {
   box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
 }
 
-/* Footer */
 .sticky-footer {
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
-  padding: 24px 20px;
+  padding: 24px 16px;
   padding-bottom: calc(var(--safe-area-inset-bottom) + 10px);
   background: linear-gradient(to top, var(--bg-color) 80%, transparent);
   z-index: 50;
+  max-width: 500px;
+  margin: 0 auto;
 }
 
-/* Badge System */
 .status-badge {
   background: rgba(212, 175, 55, 0.1);
   padding: 8px 16px;
-  border-radius: full;
+  border-radius: 999px;
   border: 1px solid rgba(212, 175, 55, 0.3);
   font-size: 11px;
   font-weight: 900;
   text-transform: uppercase;
   color: var(--accent-gold);
-  letter-spacing: 2px;
+  letter-spacing: 1px;
 }
 
-/* Transitions */
 .scrollbar-hide {
   -ms-overflow-style: none;
   scrollbar-width: none;

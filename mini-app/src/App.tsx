@@ -168,7 +168,7 @@ const App: React.FC = () => {
     });
   }, [data.bookings]);
 
-  const APP_VERSION = "2.5.7-STABLE";
+  const APP_VERSION = "2.5.8-ULTRA";
 
   const getRussianDayHeader = (day: Date) => {
     const days = ['вс', 'пн', 'вт', 'ср', 'чт', 'пт', 'сб'];
@@ -253,9 +253,9 @@ const App: React.FC = () => {
   }
 
   return (
-    <div className="container min-h-screen flex flex-col pb-32">
+    <div className="app-shell min-h-screen flex flex-col pb-32">
       {/* Header */}
-      <div className="px-5 py-6 flex justify-between items-center bg-black/95 backdrop-blur-2xl sticky top-0 z-40 border-b border-white/5 flex-nowrap min-w-0">
+      <div className="premium-header bg-black/95 backdrop-blur-2xl sticky top-0 z-40 border-b border-white/5">
         <div className="flex flex-col min-w-0 flex-1">
           <div className="flex items-center gap-2 overflow-hidden">
             <h1 className="logo-text truncate">{data.settings?.name?.split(' ')[0]}</h1>
@@ -594,8 +594,8 @@ const App: React.FC = () => {
             ) : (
               <div className="space-y-6">
                 {userBookings.map(b => (
-                  <div key={b.id} className="glass-card p-6 border-l-[6px] border-accent-gold">
-                    <div className="flex justify-between items-start pl-2">
+                  <div key={b.id} className="glass-card booking-card mb-6">
+                    <div className="flex justify-between items-start">
                       <div>
                         <div className="text-2xl font-black text-white mb-1">{b.time}</div>
                         <div className="status-badge py-1 px-3 text-[9px]">{format(parse(b.date, 'yyyy-MM-dd', new Date()), 'd MMMM', { locale: ru })}</div>
