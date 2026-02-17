@@ -170,7 +170,7 @@ const App: React.FC = () => {
     });
   }, [data.bookings]);
 
-  const APP_VERSION = "2.6.1-STYLES";
+  const APP_VERSION = "2.7.0-FINAL";
 
   const getRussianDayHeader = (day: Date) => {
     const days = ['вс', 'пн', 'вт', 'ср', 'чт', 'пт', 'сб'];
@@ -476,8 +476,8 @@ const App: React.FC = () => {
                   <span className="text-secondary/40 text-[10px] uppercase font-black tracking-widest block mb-4">Ваш телефон для связи</span>
                   <input
                     type="tel"
-                    placeholder="+7 (___) ___-__-__"
-                    className="admin-input w-full"
+                    placeholder="+7 999 999 99 99"
+                    className="admin-input w-full text-center"
                     value={clientPhone}
                     onChange={(e) => setClientPhone(e.target.value)}
                   />
@@ -491,7 +491,13 @@ const App: React.FC = () => {
               </div>
             </div>
             <div className="sticky-footer">
-              <button onClick={handleFinalBooking} className="btn-luxury">Подтвердить запись</button>
+              <button
+                onClick={handleFinalBooking}
+                disabled={clientPhone.length < 10}
+                className={`btn-luxury ${clientPhone.length < 10 ? 'opacity-50 grayscale cursor-not-allowed' : ''}`}
+              >
+                Подтвердить запись
+              </button>
             </div>
             <button onClick={() => setStep('calendar')} className="mt-8 w-full text-secondary/40 text-[10px] font-black uppercase tracking-[3px] text-center">назад к календарю</button>
           </motion.div>

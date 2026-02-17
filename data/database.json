@@ -20,7 +20,7 @@
       "subServices": [
         {
           "name": "Undercut (Андеркат)",
-          "photo": "/images/services/style-cut.jpg"
+          "photo": "/images/masters/m1.jpg"
         },
         {
           "name": "Fade (Фейд)",
@@ -28,19 +28,19 @@
         },
         {
           "name": "Pompadour (Помпадур)",
-          "photo": "/images/services/style-cut.jpg"
+          "photo": "/images/masters/m2.jpg"
         },
         {
           "name": "Quiff (Квифф)",
           "photo": "/images/services/style-cut.jpg"
         },
         {
-          "name": "Slicked Back (Зачес назад)",
-          "photo": "/images/services/royal-shave.jpg"
+          "name": "Slicked Back (Зачес)",
+          "photo": "/images/masters/m3.jpg"
         },
         {
-          "name": "Buzz Cut (Бокс/Полубокс)",
-          "photo": "/images/services/clipper.jpg"
+          "name": "Buzz Cut (Бокс)",
+          "photo": "/images/services/royal-shave.jpg"
         },
         {
           "name": "Side Part (Пробор)",
@@ -48,15 +48,15 @@
         },
         {
           "name": "Crop (Кроп)",
-          "photo": "/images/services/style-cut.jpg"
+          "photo": "/images/masters/m4.jpg"
         },
         {
           "name": "Curtains (Шторы)",
-          "photo": "/images/services/style-cut.jpg"
+          "photo": "/images/services/beard-trim.jpg"
         },
         {
           "name": "Mullet (Маллет)",
-          "photo": "/images/services/style-cut.jpg"
+          "photo": "/images/services/full-service.jpg"
         }
       ]
     },
