@@ -16,7 +16,7 @@
       "duration": 60,
       "icon": "✂️",
       "description": "Классика и тренды от профессионалов высокого уровня",
-      "photo": "/images/services/style-cut.jpg"
+      "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?auto=format&fit=crop&q=80&w=800"
     },
     {
       "id": 2,
@@ -25,7 +25,7 @@
       "duration": 40,
       "icon": "🧔",
       "description": "Четкие контуры и премиальный уход за бородой",
-      "photo": "/images/services/beard-trim.jpg"
+      "photo": "https://images.unsplash.com/photo-1621605815841-2cd6180bf378?auto=format&fit=crop&q=80&w=800"
     },
     {
       "id": 3,
@@ -34,7 +34,7 @@
       "duration": 50,
       "icon": "🪒",
       "description": "Традиционный ритуал с использованием горячих полотенец",
-      "photo": "/images/services/royal-shave.jpg"
+      "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&q=80&w=800"
     },
     {
       "id": 4,
@@ -43,7 +43,7 @@
       "duration": 120,
       "icon": "💎",
       "description": "Стрижка, борода и SPA-процедуры для лица",
-      "photo": "/images/services/full-service.jpg"
+      "photo": "https://images.unsplash.com/photo-1599351431247-f577f5d38edc?auto=format&fit=crop&q=80&w=800"
     },
     {
       "id": 5,
@@ -52,7 +52,7 @@
       "duration": 90,
       "icon": "👔",
       "description": "Прививаем стиль с самого раннего возраста",
-      "photo": "/images/services/father-son-premium.jpg"
+      "photo": "https://images.unsplash.com/photo-1512690199145-8c7cd19a8ce9?auto=format&fit=crop&q=80&w=800"
     },
     {
       "id": 6,
@@ -61,7 +61,7 @@
       "duration": 30,
       "icon": "🎭",
       "description": "Очищение черной маской и увлажнение",
-      "photo": "/images/services/face-detox.jpg"
+      "photo": "https://images.unsplash.com/photo-1512290923902-8a9f81dc20df?auto=format&fit=crop&q=80&w=800"
     }
   ],
   "masters": [
@@ -70,28 +70,28 @@
       "name": "Александр",
       "title": "Senior Barber",
       "rating": 5.0,
-      "photo": "/images/masters/m1.jpg"
+      "photo": "https://images.unsplash.com/photo-1593702288056-7847bc24f997?auto=format&fit=crop&q=80&w=400"
     },
     {
       "id": 2,
       "name": "Дмитрий",
       "title": "Master Barber",
       "rating": 4.9,
-      "photo": "/images/masters/m2.jpg"
+      "photo": "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=400"
     },
     {
       "id": 3,
       "name": "Артем",
       "title": "Creative Barber",
       "rating": 4.8,
-      "photo": "/images/masters/m3.jpg"
+      "photo": "https://images.unsplash.com/photo-1512484776495-a09d92e87c3b?auto=format&fit=crop&q=80&w=400"
     },
     {
       "id": 4,
       "name": "Виктор",
       "title": "Barber",
       "rating": 4.7,
-      "photo": "/images/masters/m4.jpg"
+      "photo": "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&q=80&w=400"
     }
   ],
   "bookings": [],

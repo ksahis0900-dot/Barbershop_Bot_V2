@@ -154,7 +154,7 @@ const App: React.FC = () => {
     });
   }, [data.bookings]);
 
-  const APP_VERSION = "2.4.7-STABLE";
+  const APP_VERSION = "2.5.5-WOW";
 
   const getRussianDayHeader = (day: Date) => {
     const days = ['вс', 'пн', 'вт', 'ср', 'чт', 'пт', 'сб'];
@@ -241,20 +241,28 @@ const App: React.FC = () => {
   return (
     <div className="container min-h-screen flex flex-col pb-32">
       {/* Header */}
-      <div className="px-6 py-8 flex justify-between items-center bg-[#0c0d10]/80 backdrop-blur-md sticky top-0 z-40 border-b border-white/5">
-        <div>
+      <div className="px-6 py-8 flex justify-between items-center bg-black/95 backdrop-blur-2xl sticky top-0 z-40 border-b border-white/5">
+        <div className="flex flex-col">
           <div className="flex items-center gap-2">
             <h1 className="logo-text">{data.settings?.name?.split(' ')[0]}</h1>
-            <span className="text-[8px] opacity-10 font-black">{APP_VERSION}</span>
+            <div className="bg-accent-gold/10 px-1.5 py-0.5 rounded border border-accent-gold/20">
+              <span className="text-[6px] text-accent-gold font-black tracking-tighter">{APP_VERSION}</span>
+            </div>
           </div>
-          <div className="logo-subtitle">{data.settings?.name?.split(' ')[1]}</div>
+          <div className="logo-subtitle">{data.settings?.name?.split(' ').slice(1).join(' ')}</div>
         </div>
-        <div className="flex gap-2">
-          <button onClick={() => setStep(step === 'my_bookings' ? 'services' : 'my_bookings')} className={`w-12 h-12 flex items-center justify-center rounded-2xl border transition-all ${step === 'my_bookings' ? 'bg-accent-gold border-accent-gold text-black shadow-lg shadow-accent-gold/20' : 'bg-white/5 border-white/10 text-secondary'}`}>
-            <CalendarIcon size={20} />
+        <div className="flex gap-3">
+          <button
+            onClick={() => setStep(step === 'my_bookings' ? 'services' : 'my_bookings')}
+            className={`header-btn ${step === 'my_bookings' ? 'active' : ''}`}
+          >
+            <CalendarIcon size={18} strokeWidth={2.5} />
           </button>
-          <button onClick={() => step === 'admin' ? logoutAdmin() : setStep('admin_auth')} className="w-12 h-12 flex items-center justify-center rounded-2xl bg-white/5 border border-white/10 text-secondary transition-all">
-            {step === 'admin' ? <LogOut size={20} /> : <Settings size={20} />}
+          <button
+            onClick={() => step === 'admin' ? logoutAdmin() : setStep('admin_auth')}
+            className={`header-btn ${step === 'admin' || step === 'admin_auth' ? 'active' : ''}`}
+          >
+            {step === 'admin' ? <LogOut size={18} strokeWidth={2.5} /> : <Settings size={18} strokeWidth={2.5} />}
           </button>
         </div>
       </div>
@@ -264,7 +272,7 @@ const App: React.FC = () => {
           <motion.div key="services" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-6">
             <div className="flex items-center justify-between mb-8">
               <h2 className="text-2xl font-bold">Услуги</h2>
-              <div className="bg-white/5 px-4 py-2 rounded-full border border-white/10 text-[10px] font-bold uppercase tracking-widest text-accent-gold flex items-center gap-2">
+              <div className="status-badge flex items-center gap-2">
                 <Clock size={12} /> {totalDuration} мин
               </div>
             </div>
@@ -277,15 +285,21 @@ const App: React.FC = () => {
                   else setSelectedServices([...selectedServices, s]);
                 }} className={`glass-card service-card relative group transition-all ${selectedServices.find(x => x.id === s.id) ? 'selected' : ''}`}>
                   <div className="service-image-container">
-                    <img src={s.photo} className="service-img group-hover:scale-110" alt={s.name} />
+                    <img src={s.photo} className="service-img" alt={s.name} />
+                    <div className="service-overlay" />
                     <div className="service-badge">{s.icon}</div>
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent" />
+                    {selectedServices.find(x => x.id === s.id) && (
+                      <div className="absolute inset-0 bg-accent-gold/10 flex items-center justify-center z-10 transition-all">
+                        <div className="bg-accent-gold text-black rounded-full p-1.5 shadow-xl">
+                          <CheckCircle2 size={16} strokeWidth={3} />
+                        </div>
+                      </div>
+                    )}
                   </div>
                   <div className="service-info">
                     <h3 className="service-name">{s.name}</h3>
-                    <div className="flex justify-between items-center mt-auto pt-2">
+                    <div className="flex justify-between items-center mt-1">
                       <span className="service-price">{s.price}₽</span>
-                      {selectedServices.find(x => x.id === s.id) && <CheckCircle2 size={16} className="text-accent-gold" />}
                     </div>
                   </div>
                 </div>
@@ -305,27 +319,38 @@ const App: React.FC = () => {
 
         {step === 'masters' && (
           <motion.div key="masters" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="p-6">
-            <h2 className="text-2xl font-bold mb-8">Мастер</h2>
-            <div className="space-y-4">
+            <h2 className="text-2xl font-bold mb-10">Выберите мастера</h2>
+            <div className="space-y-6">
               {data.masters.map(m => (
-                <div key={m.id} onClick={() => setSelectedMaster(m)} className={`glass-card p-4 flex items-center gap-5 transition-all ${selectedMaster?.id === m.id ? 'selected' : ''}`}>
-                  <img src={m.photo} className="w-20 h-20 rounded-2xl object-cover shadow-xl" alt={m.name} />
-                  <div className="flex-1">
-                    <h3 className="font-bold text-lg">{m.name}</h3>
-                    <div className="text-secondary text-[10px] font-bold uppercase tracking-widest flex items-center gap-2 mt-1">
-                      <Award size={14} className="text-accent-gold" /> {m.title}
-                    </div>
-                    <div className="text-accent-gold text-xs font-bold mt-2">★ {m.rating}</div>
+                <div key={m.id} onClick={() => setSelectedMaster(m)} className={`glass-card p-5 flex items-center gap-6 transition-all ${selectedMaster?.id === m.id ? 'selected' : ''}`}>
+                  <div className="relative">
+                    <img src={m.photo} className="w-24 h-24 rounded-[22px] object-cover shadow-2xl relative z-10" alt={m.name} />
+                    <div className="absolute -inset-2 bg-accent-gold/5 blur-xl rounded-full opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                   </div>
+                  <div className="flex-1">
+                    <h3 className="font-extrabold text-xl mb-1 tracking-tight">{m.name}</h3>
+                    <div className="status-badge py-1 px-3 text-[8px] inline-flex mb-3">
+                      {m.title}
+                    </div>
+                    <div className="flex items-center gap-1.5 text-accent-gold font-black text-sm">
+                      <Award size={14} fill="currentColor" />
+                      <span>{m.rating.toFixed(1)}</span>
+                    </div>
+                  </div>
+                  {selectedMaster?.id === m.id && (
+                    <div className="bg-accent-gold text-black rounded-full p-2 shadow-xl animate-in zoom-in-50 duration-300">
+                      <CheckCircle2 size={18} strokeWidth={3} />
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
             {selectedMaster && (
               <div className="sticky-footer">
-                <button onClick={() => setStep('calendar')} className="btn-luxury">Выбрать дату</button>
+                <button onClick={() => setStep('calendar')} className="btn-luxury">Продолжить</button>
               </div>
             )}
-            <button onClick={() => setStep('services')} className="mt-8 w-full text-secondary text-[10px] font-bold uppercase tracking-widest opacity-30">Назад</button>
+            <button onClick={() => setStep('services')} className="mt-12 w-full text-secondary/40 text-[10px] font-black uppercase tracking-[3px] text-center">← назад к услугам</button>
           </motion.div>
         )}
 
@@ -344,8 +369,8 @@ const App: React.FC = () => {
                 );
               })}
             </div>
-            <div className="bg-white/5 border border-white/10 rounded-2xl py-4 px-6 text-accent-gold text-xs font-black uppercase tracking-[2px] my-8 text-center shadow-lg">
-              {format(selectedDate, 'd MMMM yyyy года', { locale: ru })}
+            <div className="bg-accent-gold/5 border border-accent-gold/20 rounded-2xl py-6 px-4 text-accent-gold text-sm font-black uppercase tracking-[2px] my-10 text-center shadow-lg backdrop-blur-md">
+              {format(selectedDate, 'd MMMM yyyy г.', { locale: ru })}
             </div>
             <div className="time-grid">
               {availableTimes.length > 0 ? (
@@ -353,53 +378,65 @@ const App: React.FC = () => {
                   <div key={t} onClick={() => setSelectedTime(t)} className={`time-slot ${selectedTime === t ? 'selected' : ''}`}>{t}</div>
                 ))
               ) : (
-                <div className="col-span-3 py-10 text-center text-secondary border border-dashed border-white/10 rounded-2xl font-bold">Мест нет</div>
+                <div className="col-span-3 py-16 text-center text-secondary/30 border-2 border-dashed border-white/5 rounded-[28px] font-bold text-xs uppercase tracking-widest">Мест нет</div>
               )}
             </div>
             {selectedTime && (
               <div className="sticky-footer">
-                <button onClick={() => setStep('confirmation')} className="btn-luxury">Подтвердить</button>
+                <button onClick={() => setStep('confirmation')} className="btn-luxury">Продолжить</button>
               </div>
             )}
-            <button onClick={() => setStep('masters')} className="mt-8 w-full text-secondary text-[10px] font-bold uppercase tracking-widest opacity-30 text-center">Назад</button>
+            <button onClick={() => setStep('masters')} className="mt-12 w-full text-secondary/40 text-[10px] font-black uppercase tracking-[3px] text-center">← назад к выбору мастера</button>
           </motion.div>
         )}
 
         {step === 'confirmation' && (
-          <motion.div key="confirmation" initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="p-6 text-center">
-            <div className="glass-card p-8 bg-white/[0.01]">
-              <div className="w-16 h-16 bg-accent-gold rounded-full flex items-center justify-center mx-auto mb-6 shadow-2xl">
-                <CalendarIcon size={24} className="text-black" />
-              </div>
-              <h2 className="text-3xl font-black mb-2 text-glow">{selectedTime}</h2>
-              <p className="text-secondary font-bold uppercase tracking-widest text-[10px] mb-8">{format(selectedDate, 'EEEE, d MMMM yyyy года', { locale: ru })}</p>
-              <div className="space-y-4 text-left border-t border-white/5 pt-6">
-                <div className="flex justify-between items-center text-[10px] uppercase font-bold tracking-widest">
-                  <span className="text-secondary">Мастер</span>
-                  <span className="text-accent-gold">{selectedMaster?.name}</span>
+          <motion.div key="confirmation" initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="p-6">
+            <h2 className="text-2xl font-bold mb-8">Детали записи</h2>
+            <div className="glass-card mb-8">
+              <div className="p-8 text-center bg-gradient-to-b from-accent-gold/5 to-transparent">
+                <div className="w-20 h-20 bg-accent-gold rounded-[24px] flex items-center justify-center mx-auto mb-6 shadow-[0_15px_35px_rgba(212,175,55,0.4)]">
+                  <CalendarIcon size={32} strokeWidth={2.5} className="text-black" />
                 </div>
-                <div className="flex justify-between items-start text-[10px] uppercase font-bold tracking-widest">
-                  <span className="text-secondary">Услуги</span>
+                <h2 className="text-4xl font-black mb-1 text-glow tracking-tighter">{selectedTime}</h2>
+                <p className="text-accent-gold font-bold uppercase tracking-[3px] text-[10px] opacity-60">{format(selectedDate, 'EEEE, d MMMM', { locale: ru })}</p>
+              </div>
+
+              <div className="px-8 pb-8 space-y-6">
+                <div className="flex justify-between items-center border-t border-white/5 pt-6">
+                  <span className="text-secondary/40 text-[10px] uppercase font-black tracking-widest">Мастер</span>
+                  <span className="text-white font-bold text-sm underline decoration-accent-gold/30 underline-offset-4">{selectedMaster?.name}</span>
+                </div>
+                <div className="flex justify-between items-start">
+                  <span className="text-secondary/40 text-[10px] uppercase font-black tracking-widest">Услуги</span>
                   <div className="text-right space-y-1">
-                    {selectedServices.map(s => <div key={s.id}>{s.name}</div>)}
+                    {selectedServices.map(s => <div key={s.id} className="text-white font-bold text-xs">{s.name}</div>)}
                   </div>
+                </div>
+                <div className="flex justify-between items-center border-t border-white/5 pt-6">
+                  <span className="text-secondary/40 text-[10px] uppercase font-black tracking-widest">К оплате</span>
+                  <span className="text-accent-gold font-black text-xl">{totalPrice}₽</span>
                 </div>
               </div>
             </div>
             <div className="sticky-footer">
-              <button onClick={handleFinalBooking} className="btn-luxury py-6">Записаться</button>
+              <button onClick={handleFinalBooking} className="btn-luxury">Подтвердить запись</button>
             </div>
+            <button onClick={() => setStep('calendar')} className="mt-8 w-full text-secondary/40 text-[10px] font-black uppercase tracking-[3px] text-center">назад к календарю</button>
           </motion.div>
         )}
 
         {step === 'success' && (
-          <motion.div key="success" initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} className="p-8 text-center flex flex-col items-center justify-center min-h-[60vh]">
-            <div className="w-24 h-24 bg-accent-gold rounded-full flex items-center justify-center mb-8 shadow-[0_0_50px_rgba(197,166,118,0.3)] animate-bounce">
-              <CheckCircle2 size={48} className="text-black" />
+          <motion.div key="success" initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="p-8 text-center flex flex-col items-center justify-center min-h-[70vh]">
+            <div className="relative mb-12">
+              <div className="absolute inset-0 bg-accent-gold/20 blur-[60px] rounded-full" />
+              <div className="w-32 h-32 bg-accent-gold rounded-[40px] flex items-center justify-center relative shadow-[0_20px_50px_rgba(212,175,55,0.4)]">
+                <CheckCircle2 size={64} strokeWidth={3} className="text-black" />
+              </div>
             </div>
-            <h2 className="text-3xl font-black mb-4">Готово!</h2>
-            <p className="text-secondary text-sm mb-12">Мы ждем вас в Retro Barbershop</p>
-            <button onClick={() => setStep('services')} className="btn-luxury">Главная</button>
+            <h2 className="text-4xl font-black mb-4 tracking-tighter">Готово!</h2>
+            <p className="text-secondary font-medium text-base mb-16 max-w-[200px]">Мы ждем вас в<br /><span className="text-accent-gold font-bold">{data.settings?.name}</span></p>
+            <button onClick={() => { setStep('services'); setSelectedServices([]); setSelectedMaster(null); setSelectedTime(null); }} className="btn-luxury">На главную</button>
           </motion.div>
         )}
 
@@ -483,32 +520,36 @@ const App: React.FC = () => {
         )}
 
         {step === 'my_bookings' && (
-          <motion.div key="my_bookings" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-6">
-            <h2 className="text-2xl font-bold mb-8">Мои записи</h2>
+          <motion.div key="my_bookings" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="p-6 mb-20">
+            <h2 className="text-2xl font-bold mb-10">Мои записи</h2>
             {userBookings.length === 0 ? (
-              <div className="py-20 text-center opacity-30">
-                <CalendarIcon size={40} className="mx-auto mb-4" />
-                <p className="text-[10px] uppercase font-bold tracking-widest">Нет активных записей</p>
+              <div className="py-32 text-center">
+                <div className="w-20 h-20 bg-white/5 rounded-[30px] flex items-center justify-center mx-auto mb-6 border border-white/5">
+                  <CalendarIcon size={32} className="text-white/20" />
+                </div>
+                <p className="text-[10px] uppercase font-black tracking-[4px] text-white/20">Нет активных записей</p>
               </div>
             ) : (
-              <div className="space-y-4">
+              <div className="space-y-6">
                 {userBookings.map(b => (
-                  <div key={b.id} className="glass-card p-5 border-l-2 border-accent-gold">
-                    <div className="flex justify-between items-center">
+                  <div key={b.id} className="glass-card p-6 border-l-4 border-accent-gold">
+                    <div className="flex justify-between items-start">
                       <div>
-                        <div className="text-xl font-black text-accent-gold">{b.time}</div>
-                        <div className="text-[10px] font-bold text-secondary uppercase">{format(parse(b.date, 'yyyy-MM-dd', new Date()), 'd MMMM', { locale: ru })}</div>
+                        <div className="text-2xl font-black text-white mb-1">{b.time}</div>
+                        <div className="status-badge py-1 px-3 text-[9px]">{format(parse(b.date, 'yyyy-MM-dd', new Date()), 'd MMMM', { locale: ru })}</div>
                       </div>
                       <div className="text-right">
-                        <div className="font-bold text-sm tracking-tight">{b.masterName}</div>
-                        <div className="text-[10px] text-accent-gold font-bold">{b.total}₽</div>
+                        <div className="font-bold text-sm text-accent-gold mb-1">{b.masterName}</div>
+                        <div className="text-[10px] text-white/40 font-black uppercase tracking-widest">{b.total}₽</div>
                       </div>
                     </div>
                   </div>
                 ))}
               </div>
             )}
-            <button onClick={() => setStep('services')} className="mt-12 w-full btn-luxury py-4 opacity-70">На главную</button>
+            <div className="fixed bottom-10 left-6 right-6 z-50">
+              <button onClick={() => setStep('services')} className="btn-luxury opacity-90 backdrop-blur-md">На главную</button>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
