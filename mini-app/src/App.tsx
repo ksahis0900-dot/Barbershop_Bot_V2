@@ -19,7 +19,17 @@ import {
   isSameDay,
   parse,
   addMinutes,
-  isAfter
+  isAfter,
+  startOfMonth,
+  endOfMonth,
+  startOfWeek,
+  endOfWeek,
+  eachDayOfInterval,
+  addMonths,
+  subMonths,
+  isBefore,
+  startOfDay,
+  isSameMonth
 } from 'date-fns';
 import { ru } from 'date-fns/locale';
 
@@ -74,6 +84,24 @@ const App: React.FC = () => {
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [selectedStyles, setSelectedStyles] = useState<{ [key: number]: string }>({});
   const [clientPhone, setClientPhone] = useState('');
+  const [currentMonth, setCurrentMonth] = useState<Date>(startOfMonth(new Date()));
+
+  const calendarDays = useMemo(() => {
+    const start = startOfWeek(startOfMonth(currentMonth), { weekStartsOn: 1 });
+    const end = endOfWeek(endOfMonth(currentMonth), { weekStartsOn: 1 });
+    return eachDayOfInterval({ start, end });
+  }, [currentMonth]);
+
+  const handlePrevMonth = () => {
+    const prev = subMonths(currentMonth, 1);
+    if (!isBefore(prev, startOfMonth(new Date()))) {
+      setCurrentMonth(prev);
+    }
+  };
+
+  const handleNextMonth = () => setCurrentMonth(addMonths(currentMonth, 1));
+
+  const weekDays = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
 
   // Admin State
   const [adminPin, setAdminPin] = useState('');
@@ -171,18 +199,17 @@ const App: React.FC = () => {
     });
   }, [data.bookings]);
 
-  const APP_VERSION = "2.7.4-FINAL-FIX";
+  const APP_VERSION = "2.7.5-CALENDAR-GRID";
 
-  const getRussianDayHeader = (day: Date) => {
-    const days = ['вс', 'пн', 'вт', 'ср', 'чт', 'пт', 'сб'];
-    return days[day.getDay()].toUpperCase();
-  };
 
   const totalPrice = selectedServices.reduce((sum, s) => sum + s.price, 0);
   const totalDuration = selectedServices.reduce((sum, s) => sum + s.duration, 0);
 
   const availableTimes = useMemo(() => {
     if (!selectedMaster || !selectedDate) return [];
+    // Only show times if selected date is valid (today or future)
+    if (isBefore(selectedDate, startOfDay(new Date()))) return [];
+
     const times = [];
     const workStartStr = data.settings?.working_hours?.start || '10:00';
     const workEndStr = data.settings?.working_hours?.end || '21:00';
@@ -432,40 +459,74 @@ const App: React.FC = () => {
 
         {step === 'calendar' && (
           <motion.div key="calendar" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-6">
-            <h2 className="text-2xl font-bold mb-8">Запись</h2>
             <h2 className="text-2xl font-bold mb-6">Запись</h2>
 
-            <div className="mb-2 flex items-center justify-between text-xs font-bold uppercase tracking-widest text-secondary/60">
-              <span>1. Выберите дату</span>
+            <div className="mb-4">
+              <div className="glass-card p-4">
+                <div className="flex items-center justify-between mb-4">
+                  <button onClick={handlePrevMonth} className="p-2 text-accent-gold hover:text-white transition-colors">◀</button>
+                  <span className="text-sm font-black uppercase tracking-widest text-accent-gold">
+                    {format(currentMonth, 'LLLL yyyy', { locale: ru })}
+                  </span>
+                  <button onClick={handleNextMonth} className="p-2 text-accent-gold hover:text-white transition-colors">▶</button>
+                </div>
+
+                <div className="grid grid-cols-7 gap-1 text-center mb-2">
+                  {weekDays.map(d => (
+                    <div key={d} className="text-[10px] font-bold text-secondary/50 uppercase">{d}</div>
+                  ))}
+                </div>
+
+                <div className="grid grid-cols-7 gap-1">
+                  {calendarDays.map((day, idx) => {
+                    const isSelected = isSameDay(day, selectedDate);
+                    const isToday = isSameDay(day, new Date());
+                    const isCurrentMonth = isSameMonth(day, currentMonth);
+                    const isPast = isBefore(day, startOfDay(new Date()));
+
+                    return (
+                      <div
+                        key={idx}
+                        onClick={() => {
+                          if (!isPast) {
+                            setSelectedDate(day);
+                            setSelectedTime(null);
+                          }
+                        }}
+                        className={`
+                          aspect-square flex items-center justify-center rounded-lg text-sm font-bold transition-all
+                          ${!isCurrentMonth ? 'opacity-20' : ''}
+                          ${isPast ? 'opacity-10 cursor-not-allowed' : 'cursor-pointer'}
+                          ${isSelected ? 'bg-accent-gold text-black shadow-lg scale-105' : 'hover:bg-white/5'}
+                          ${isToday && !isSelected ? 'border border-accent-gold/50 text-accent-gold' : ''}
+                        `}
+                      >
+                        {format(day, 'd')}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
             </div>
-            <div className="date-scroller scrollbar-hide mb-8">
-              {[...Array(21)].map((_, i) => {
-                const day = addDays(new Date(), i);
-                const active = isSameDay(day, selectedDate);
-                return (
-                  <div key={i} onClick={() => { setSelectedDate(day); setSelectedTime(null); }} className={`date-item ${active ? 'active' : ''}`}>
-                    <span className="text-[10px] font-black uppercase tracking-widest opacity-40 mb-1">{getRussianDayHeader(day)}</span>
-                    <span className="text-xl font-black">{format(day, 'd')}</span>
-                  </div>
-                );
-              })}
-            </div>
-            <div className="bg-accent-gold/5 border border-accent-gold/20 rounded-2xl py-6 px-4 text-accent-gold text-sm font-black uppercase tracking-[2px] my-10 text-center shadow-lg backdrop-blur-md">
-              {format(selectedDate, 'd MMMM yyyy г.', { locale: ru })}
-            </div>
-            <div className="mb-4 mt-8 flex items-center justify-between text-xs font-bold uppercase tracking-widest text-secondary/60">
-              <span>2. Выберите время</span>
-              <span className="text-[10px] opacity-50">{format(selectedDate, 'dd.MM')}</span>
-            </div>
-            <div className="time-grid">
-              {availableTimes.length > 0 ? (
-                availableTimes.map(t => (
-                  <div key={t} onClick={() => setSelectedTime(t)} className={`time-slot ${selectedTime === t ? 'selected' : ''}`}>{t}</div>
-                ))
-              ) : (
-                <div className="col-span-3 py-16 text-center text-secondary/30 border-2 border-dashed border-white/5 rounded-[28px] font-bold text-xs uppercase tracking-widest">Мест нет</div>
-              )}
-            </div>
+
+            {selectedDate && (
+              <div className="animate-in slide-in-from-bottom-4 fade-in duration-300">
+                <div className="mb-4 mt-8 flex items-center justify-between text-xs font-bold uppercase tracking-widest text-secondary/60">
+                  <span>2. Выберите время</span>
+                  <span className="text-[10px] opacity-50">{format(selectedDate, 'd MMMM', { locale: ru })}</span>
+                </div>
+                <div className="time-grid">
+                  {availableTimes.length > 0 ? (
+                    availableTimes.map(t => (
+                      <div key={t} onClick={() => setSelectedTime(t)} className={`time-slot ${selectedTime === t ? 'selected' : ''}`}>{t}</div>
+                    ))
+                  ) : (
+                    <div className="col-span-3 py-16 text-center text-secondary/30 border-2 border-dashed border-white/5 rounded-[28px] font-bold text-xs uppercase tracking-widest">Мест нет</div>
+                  )}
+                </div>
+              </div>
+            )}
+
             {selectedTime && (
               <div className="sticky-footer">
                 <button onClick={() => setStep('confirmation')} className="btn-luxury">Продолжить</button>
