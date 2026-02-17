@@ -79,7 +79,6 @@ const App: React.FC = () => {
   const [adminTab, setAdminTab] = useState<'bookings' | 'services' | 'masters' | 'settings'>('bookings');
   const [editingItem, setEditingItem] = useState<any>(null);
 
-  const APP_VERSION = "2.4.2-ADAPTIVE";
 
   useEffect(() => {
     WebApp.ready();
@@ -146,9 +145,16 @@ const App: React.FC = () => {
 
   const userBookings = useMemo(() => {
     const userId = WebApp.initDataUnsafe?.user?.id;
-    if (!userId) return [];
-    return data.bookings.filter(b => b.userId === userId || b.clientName === WebApp.initDataUnsafe?.user?.first_name);
+    const firstName = WebApp.initDataUnsafe?.user?.first_name;
+
+    return data.bookings.filter(b => {
+      const matchId = userId && b.userId === userId;
+      const matchName = firstName && b.clientName === firstName;
+      return matchId || matchName;
+    });
   }, [data.bookings]);
+
+  const APP_VERSION = "2.4.4-STABLE";
 
   const getRussianDayHeader = (day: Date) => {
     const days = ['вс', 'пн', 'вт', 'ср', 'чт', 'пт', 'сб'];
