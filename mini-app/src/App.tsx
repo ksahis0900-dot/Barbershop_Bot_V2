@@ -32,6 +32,7 @@ interface Service {
   icon: string;
   description: string;
   photo: string;
+  subServices?: { name: string, photo: string }[];
 }
 
 interface Master {
@@ -169,7 +170,7 @@ const App: React.FC = () => {
     });
   }, [data.bookings]);
 
-  const APP_VERSION = "2.6.0-ULTRA-CENTRED";
+  const APP_VERSION = "2.6.1-STYLES";
 
   const getRussianDayHeader = (day: Date) => {
     const days = ['вс', 'пн', 'вт', 'ср', 'чт', 'пт', 'сб'];
@@ -294,40 +295,72 @@ const App: React.FC = () => {
             </div>
 
             <div className="service-grid">
-              {data.services.map(s => (
-                <div key={s.id} onClick={() => {
-                  const exists = selectedServices.find(x => x.id === s.id);
-                  if (exists) setSelectedServices(selectedServices.filter(x => x.id !== s.id));
-                  else setSelectedServices([...selectedServices, s]);
-                }} className={`glass-card service-card relative group transition-all ${selectedServices.find(x => x.id === s.id) ? 'selected' : ''}`}>
-                  <div className="service-image-container">
-                    <img
-                      src={s.photo}
-                      className="service-img"
-                      alt=""
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1585747860715-2ba37e788b70?q=80&w=800';
-                        (e.target as HTMLImageElement).alt = s.name;
+              {data.services.map(s => {
+                const isSelected = selectedServices.find(x => x.id === s.id);
+                return (
+                  <div key={s.id} className={s.subServices && isSelected ? 'col-span-2' : 'col-span-1'}>
+                    <div
+                      onClick={() => {
+                        const exists = selectedServices.find(x => x.id === s.id);
+                        if (exists) setSelectedServices(selectedServices.filter(x => x.id !== s.id));
+                        else setSelectedServices([...selectedServices, s]);
                       }}
-                    />
-                    <div className="service-overlay" />
-                    <div className="service-badge">{s.icon}</div>
-                    {selectedServices.find(x => x.id === s.id) && (
-                      <div className="absolute inset-0 bg-accent-gold/10 flex items-center justify-center z-10 transition-all">
-                        <div className="bg-accent-gold text-black rounded-full p-1.5 shadow-xl">
-                          <CheckCircle2 size={16} strokeWidth={3} />
+                      className={`glass-card service-card relative group transition-all cursor-pointer overflow-hidden ${isSelected ? 'border-accent-gold' : 'border-white/5'}`}
+                    >
+                      <div className="service-image-container">
+                        <img
+                          src={s.photo}
+                          className="service-img"
+                          onError={(e) => {
+                            e.currentTarget.style.display = 'none';
+                            e.currentTarget.parentElement!.style.backgroundColor = '#1a1b22';
+                          }}
+                        />
+                        <div className="service-overlay" />
+                        <div className="service-badge text-white font-bold flex items-center gap-1">
+                          <span>{s.duration} мин</span>
+                        </div>
+                        {isSelected && (
+                          <div className="absolute inset-0 bg-accent-gold/20 flex items-center justify-center backdrop-blur-[2px] z-10 transition-all">
+                            <div className="w-12 h-12 bg-accent-gold rounded-full flex items-center justify-center shadow-lg animate-in zoom-in-50">
+                              <CheckCircle2 className="text-black" size={24} strokeWidth={3} />
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                      <div className="service-info text-center p-3 flex flex-col items-center justify-between h-[110px]">
+                        <div>
+                          <h3 className="service-name text-center text-xs font-black uppercase tracking-wider mb-1 line-clamp-1">{s.name}</h3>
+                          <p className="text-[9px] text-secondary/60 leading-tight mb-2 line-clamp-2 h-[26px] overflow-hidden w-full">{s.description}</p>
+                        </div>
+                        <div className="service-price text-lg font-black text-accent-gold text-glow mt-auto">{s.price}₽</div>
+                      </div>
+                    </div>
+
+                    {/* Sub-services (Hairstyles) Grid */}
+                    {s.subServices && isSelected && (
+                      <div className="mt-4 mb-4 animate-in fade-in slide-in-from-top-4 space-y-3">
+                        <div className="flex items-center gap-4 px-2">
+                          <div className="h-[1px] bg-accent-gold/30 flex-1" />
+                          <h4 className="text-center text-accent-gold text-[9px] font-black uppercase tracking-[2px]">Выберите стиль</h4>
+                          <div className="h-[1px] bg-accent-gold/30 flex-1" />
+                        </div>
+                        <div className="grid grid-cols-2 gap-3 px-1">
+                          {s.subServices.map((sub, idx) => (
+                            <div key={idx} className="glass-card p-0 overflow-hidden group aspect-[4/5] relative rounded-xl border border-white/5">
+                              <img src={sub.photo} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent opacity-80" />
+                              <div className="absolute bottom-3 inset-x-0 text-center px-1">
+                                <span className="text-[9px] font-black text-white uppercase tracking-widest drop-shadow-md block leading-tight">{sub.name}</span>
+                              </div>
+                            </div>
+                          ))}
                         </div>
                       </div>
                     )}
                   </div>
-                  <div className="service-info">
-                    <h3 className="service-name">{s.name}</h3>
-                    <div className="flex justify-between items-center mt-1">
-                      <span className="service-price">{s.price}₽</span>
-                    </div>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
 
             {selectedServices.length > 0 && (

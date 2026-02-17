@@ -15,8 +15,50 @@
       "price": 2500,
       "duration": 60,
       "icon": "✂️",
-      "description": "Классическая стрижка от профессионалов высокого уровня",
-      "photo": "/images/services/style-cut.jpg"
+      "description": "Полный цикл: мытье, стрижка, укладка и консультация по стилю.",
+      "photo": "/images/services/style-cut.jpg",
+      "subServices": [
+        {
+          "name": "Undercut (Андеркат)",
+          "photo": "/images/services/style-cut.jpg"
+        },
+        {
+          "name": "Fade (Фейд)",
+          "photo": "/images/services/clipper.jpg"
+        },
+        {
+          "name": "Pompadour (Помпадур)",
+          "photo": "/images/services/style-cut.jpg"
+        },
+        {
+          "name": "Quiff (Квифф)",
+          "photo": "/images/services/style-cut.jpg"
+        },
+        {
+          "name": "Slicked Back (Зачес назад)",
+          "photo": "/images/services/royal-shave.jpg"
+        },
+        {
+          "name": "Buzz Cut (Бокс/Полубокс)",
+          "photo": "/images/services/clipper.jpg"
+        },
+        {
+          "name": "Side Part (Пробор)",
+          "photo": "/images/services/father-son-premium.jpg"
+        },
+        {
+          "name": "Crop (Кроп)",
+          "photo": "/images/services/style-cut.jpg"
+        },
+        {
+          "name": "Curtains (Шторы)",
+          "photo": "/images/services/style-cut.jpg"
+        },
+        {
+          "name": "Mullet (Маллет)",
+          "photo": "/images/services/style-cut.jpg"
+        }
+      ]
     },
     {
       "id": 2,
@@ -24,7 +66,7 @@
       "price": 1500,
       "duration": 40,
       "icon": "🧔",
-      "description": "Моделирование и уход за бородой с использованием премиальных масел",
+      "description": "Моделирование формы бороды и усов, распаривание, контуры опасной бритвой.",
       "photo": "/images/services/beard-trim.jpg"
     },
     {
@@ -33,7 +75,7 @@
       "price": 2000,
       "duration": 50,
       "icon": "🪒",
-      "description": "Традиционный ритуал с горячим полотенцем и опасной бритвой",
+      "description": "Классическое бритье опасной бритвой с распариванием горячими полотенцами и массажем лица.",
       "photo": "/images/services/royal-shave.jpg"
     },
     {
@@ -42,7 +84,7 @@
       "price": 4500,
       "duration": 120,
       "icon": "💎",
-      "description": "Стрижка волос и бороды + SPA-уход",
+      "description": "Стрижка + Борода + SPA-уход за лицом + Удаление воском (по желанию). Полное обновление.",
       "photo": "/images/services/full-service.jpg"
     },
     {
@@ -51,17 +93,8 @@
       "price": 4000,
       "duration": 90,
       "icon": "👔",
-      "description": "Совместная стрижка для создания семейного стиля",
+      "description": "Одновременная стрижка для отца и ребенка. Отличный повод провести время вместе.",
       "photo": "/images/services/father-son-premium.jpg"
-    },
-    {
-      "id": 6,
-      "name": "Детокс лица",
-      "price": 1800,
-      "duration": 30,
-      "icon": "🎭",
-      "description": "Глубокое очищение и увлажнение кожи",
-      "photo": "/images/services/face-detox.jpg"
     },
     {
       "id": 7,
@@ -69,7 +102,7 @@
       "price": 1200,
       "duration": 30,
       "icon": "🔌",
-      "description": "Быстрая и четкая стрижка под одну или две насадки",
+      "description": "Стрижка одной или двумя насадками без использования ножниц. Быстро и практично.",
       "photo": "/images/services/clipper.jpg"
     },
     {
@@ -78,7 +111,7 @@
       "price": 1000,
       "duration": 20,
       "icon": "🌑",
-      "description": "Удаление черных точек и очищение пор",
+      "description": "Очищающая маска (Black Mask) для удаления черных точек и глубокого очищения пор.",
       "photo": "/images/services/mask.jpg"
     },
     {
@@ -87,7 +120,7 @@
       "price": 2200,
       "duration": 45,
       "icon": "🎨",
-      "description": "Естественное закрашивание седины волос или бороды",
+      "description": "Тонирование волос и бороды для скрытия седины. Эффект держится до 2-3 недель, выглядит естественно.",
       "photo": "/images/services/color.jpg"
     }
   ],
