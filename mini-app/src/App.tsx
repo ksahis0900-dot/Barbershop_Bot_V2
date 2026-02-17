@@ -199,7 +199,7 @@ const App: React.FC = () => {
     });
   }, [data.bookings]);
 
-  const APP_VERSION = "2.7.5-CALENDAR-GRID";
+  const APP_VERSION = "2.7.6-HAIRSTYLES-ADDED";
 
 
   const totalPrice = selectedServices.reduce((sum, s) => sum + s.price, 0);
