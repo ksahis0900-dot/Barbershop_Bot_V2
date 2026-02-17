@@ -154,7 +154,7 @@ const App: React.FC = () => {
     });
   }, [data.bookings]);
 
-  const APP_VERSION = "2.5.5-WOW";
+  const APP_VERSION = "2.5.6-STABLE";
 
   const getRussianDayHeader = (day: Date) => {
     const days = ['вс', 'пн', 'вт', 'ср', 'чт', 'пт', 'сб'];
@@ -285,7 +285,15 @@ const App: React.FC = () => {
                   else setSelectedServices([...selectedServices, s]);
                 }} className={`glass-card service-card relative group transition-all ${selectedServices.find(x => x.id === s.id) ? 'selected' : ''}`}>
                   <div className="service-image-container">
-                    <img src={s.photo} className="service-img" alt={s.name} />
+                    <img
+                      src={s.photo}
+                      className="service-img"
+                      alt=""
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1585747860715-2ba37e788b70?q=80&w=800';
+                        (e.target as HTMLImageElement).alt = s.name;
+                      }}
+                    />
                     <div className="service-overlay" />
                     <div className="service-badge">{s.icon}</div>
                     {selectedServices.find(x => x.id === s.id) && (

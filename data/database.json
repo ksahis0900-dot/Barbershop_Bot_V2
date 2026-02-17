@@ -11,57 +11,57 @@
   "services": [
     {
       "id": 1,
-      "name": "Мужская стрижка",
+      "name": "TOP-LEVEL CUT",
       "price": 2500,
       "duration": 60,
       "icon": "✂️",
-      "description": "Классика и тренды от профессионалов высокого уровня",
-      "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?auto=format&fit=crop&q=80&w=800"
+      "description": "Premium grooming for the modern gentleman",
+      "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?q=80&w=800&auto=format&fit=crop"
     },
     {
       "id": 2,
-      "name": "Моделирование бороды",
+      "name": "BEARD SCULPTING",
       "price": 1500,
       "duration": 40,
       "icon": "🧔",
-      "description": "Четкие контуры и премиальный уход за бородой",
-      "photo": "https://images.unsplash.com/photo-1621605815841-2cd6180bf378?auto=format&fit=crop&q=80&w=800"
+      "description": "Precision trimming and luxury oil treatment",
+      "photo": "https://images.unsplash.com/photo-1621605815841-2cd6180bf378?q=80&w=800&auto=format&fit=crop"
     },
     {
       "id": 3,
-      "name": "Опасное бритьё",
+      "name": "ROYAL SHAVE",
       "price": 2000,
       "duration": 50,
       "icon": "🪒",
-      "description": "Традиционный ритуал с использованием горячих полотенец",
-      "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&q=80&w=800"
+      "description": "Traditional hot towel and straight razor ritual",
+      "photo": "https://images.unsplash.com/photo-1599351431247-f577f5d38edc?q=80&w=800&auto=format&fit=crop"
     },
     {
       "id": 4,
-      "name": "Королевский уход",
+      "name": "PREMIUM COMBO",
       "price": 4500,
       "duration": 120,
       "icon": "💎",
-      "description": "Стрижка, борода и SPA-процедуры для лица",
-      "photo": "https://images.unsplash.com/photo-1599351431247-f577f5d38edc?auto=format&fit=crop&q=80&w=800"
+      "description": "The ultimate grooming experience",
+      "photo": "https://images.unsplash.com/photo-1512690199145-8c7cd19a8ce9?q=80&w=800&auto=format&fit=crop"
     },
     {
       "id": 5,
-      "name": "Отец + Сын",
+      "name": "FATHER & SON",
       "price": 4000,
       "duration": 90,
       "icon": "👔",
-      "description": "Прививаем стиль с самого раннего возраста",
-      "photo": "https://images.unsplash.com/photo-1512690199145-8c7cd19a8ce9?auto=format&fit=crop&q=80&w=800"
+      "description": "Legacy and style shared across generations",
+      "photo": "https://images.unsplash.com/photo-1512290923902-8a9f81dc20df?q=80&w=800&auto=format&fit=crop"
     },
     {
       "id": 6,
-      "name": "Детокс лица",
+      "name": "FACE DETOX",
       "price": 1800,
       "duration": 30,
       "icon": "🎭",
-      "description": "Очищение черной маской и увлажнение",
-      "photo": "https://images.unsplash.com/photo-1512290923902-8a9f81dc20df?auto=format&fit=crop&q=80&w=800"
+      "description": "Deep cleaning and hydration",
+      "photo": "https://images.unsplash.com/photo-1515377666659-7178f48606ce?q=80&w=800&auto=format&fit=crop"
     }
   ],
   "masters": [
