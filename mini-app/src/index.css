@@ -371,42 +371,47 @@ body {
   transform: scale(1.1);
 }
 
-/* Sub-service (Hairstyle) Cards - Matching Services Style */
+/* Sub-service (Hairstyle) Circular Cards */
 .style-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 16px;
+  gap: 24px;
   margin: 24px 0;
+  padding: 0 10px;
 }
 
 .style-card {
   position: relative;
-  overflow: hidden;
-  border-radius: 24px;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  background: var(--panel-bg);
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
   cursor: pointer;
-}
-
-.style-card.selected {
-  border-color: var(--accent-gold);
-  transform: translateY(-4px);
-  box-shadow: 0 10px 30px -5px rgba(212, 175, 55, 0.3);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .style-image-container {
-  height: 190px;
-  /* Increased from 140px */
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
   overflow: hidden;
   position: relative;
+  border: 2px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.style-card.selected .style-image-container {
+  border-color: var(--accent-gold);
+  transform: scale(1.05);
+  box-shadow: 0 0 25px rgba(212, 175, 55, 0.3);
 }
 
 .style-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 0.6s ease;
 }
 
 .style-card:hover .style-image {
@@ -414,24 +419,29 @@ body {
 }
 
 .style-info {
-  padding: 12px;
   text-align: center;
-  background: rgba(12, 13, 16, 0.8);
-  backdrop-filter: blur(8px);
+  padding: 0;
+  background: transparent;
+  backdrop-filter: none;
 }
 
 .style-name {
   font-size: 11px;
-  font-weight: 950;
+  font-weight: 900;
   text-transform: uppercase;
-  color: var(--accent-gold);
+  color: var(--text-primary);
   letter-spacing: 1px;
+  transition: color 0.3s;
+}
+
+.style-card.selected .style-name {
+  color: var(--accent-gold);
 }
 
 .selection-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(212, 175, 55, 0.1);
+  background: rgba(212, 175, 55, 0.15);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -447,11 +457,17 @@ body {
 .check-badge {
   background: var(--accent-gold);
   color: black;
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+  transform: scale(0);
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.style-card.selected .check-badge {
+  transform: scale(1);
 }
