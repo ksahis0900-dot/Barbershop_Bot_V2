@@ -6,13 +6,11 @@ import {
   CheckCircle2,
   Award,
   Settings,
-  Plus,
   Trash2,
   X,
   Clock,
   Edit2,
   LogOut,
-  Save,
   Calendar as CalendarIcon
 } from 'lucide-react';
 import {
@@ -154,7 +152,7 @@ const App: React.FC = () => {
     });
   }, [data.bookings]);
 
-  const APP_VERSION = "2.4.5-STABLE";
+  const APP_VERSION = "2.4.6-STABLE";
 
   const getRussianDayHeader = (day: Date) => {
     const days = ['вс', 'пн', 'вт', 'ср', 'чт', 'пт', 'сб'];
