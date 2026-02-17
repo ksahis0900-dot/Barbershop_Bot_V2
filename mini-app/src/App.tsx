@@ -170,7 +170,7 @@ const App: React.FC = () => {
     });
   }, [data.bookings]);
 
-  const APP_VERSION = "2.7.0-FINAL";
+  const APP_VERSION = "2.7.1-POLISH";
 
   const getRussianDayHeader = (day: Date) => {
     const days = ['вс', 'пн', 'вт', 'ср', 'чт', 'пт', 'сб'];
@@ -330,7 +330,7 @@ const App: React.FC = () => {
                       </div>
                       <div className="service-info text-center p-3 flex flex-col items-center justify-between h-[110px]">
                         <div>
-                          <h3 className="service-name text-center text-xs font-black uppercase tracking-wider mb-1 line-clamp-1">{s.name}</h3>
+                          <h3 className="service-name text-center text-sm font-black uppercase tracking-wider mb-2 text-accent-gold line-clamp-2 h-[40px] flex items-center justify-center">{s.name}</h3>
                           <p className="text-[9px] text-secondary/60 leading-tight mb-2 line-clamp-2 h-[26px] overflow-hidden w-full">{s.description}</p>
                         </div>
                         <div className="service-price text-lg font-black text-accent-gold text-glow mt-auto">{s.price}₽</div>
@@ -473,7 +473,7 @@ const App: React.FC = () => {
                 </div>
 
                 <div className="border-t border-white/5 pt-6 text-center">
-                  <span className="text-secondary/40 text-[10px] uppercase font-black tracking-widest block mb-4">Ваш телефон для связи</span>
+                  <span className="text-secondary/40 text-[10px] uppercase font-black tracking-widest block mb-4">Подтвердите ваш номер телефона</span>
                   <input
                     type="tel"
                     placeholder="+7 999 999 99 99"
