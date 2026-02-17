@@ -71,6 +71,7 @@ const App: React.FC = () => {
   const [selectedMaster, setSelectedMaster] = useState<Master | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date>(addDays(new Date(), 0));
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
+  const [clientPhone, setClientPhone] = useState('');
 
   // Admin State
   const [adminPin, setAdminPin] = useState('');
@@ -168,7 +169,7 @@ const App: React.FC = () => {
     });
   }, [data.bookings]);
 
-  const APP_VERSION = "2.5.8-ULTRA";
+  const APP_VERSION = "2.6.0-ULTRA-CENTRED";
 
   const getRussianDayHeader = (day: Date) => {
     const days = ['вс', 'пн', 'вт', 'ср', 'чт', 'пт', 'сб'];
@@ -216,7 +217,8 @@ const App: React.FC = () => {
       time: selectedTime,
       total: totalPrice,
       duration: totalDuration,
-      clientName: WebApp.initDataUnsafe?.user?.first_name || 'Клиент'
+      clientName: WebApp.initDataUnsafe?.user?.first_name || 'Клиент',
+      clientPhone: clientPhone || 'Не указан'
     };
 
     try {
@@ -425,19 +427,33 @@ const App: React.FC = () => {
               </div>
 
               <div className="px-8 pb-8 space-y-6">
-                <div className="flex justify-between items-center border-t border-white/5 pt-6">
-                  <span className="text-secondary/40 text-[10px] uppercase font-black tracking-widest">Мастер</span>
+                <div className="border-t border-white/5 pt-6 text-center">
+                  <span className="text-secondary/40 text-[10px] uppercase font-black tracking-widest block mb-2">Мастер</span>
                   <span className="text-white font-bold text-sm underline decoration-accent-gold/30 underline-offset-4">{selectedMaster?.name}</span>
                 </div>
-                <div className="flex justify-between items-start">
-                  <span className="text-secondary/40 text-[10px] uppercase font-black tracking-widest">Услуги</span>
-                  <div className="text-right space-y-1">
+
+                <div className="text-center">
+                  <span className="text-secondary/40 text-[10px] uppercase font-black tracking-widest block mb-2">Услуги</span>
+                  <div className="space-y-1">
                     {selectedServices.map(s => <div key={s.id} className="text-white font-bold text-xs">{s.name}</div>)}
                   </div>
                 </div>
-                <div className="flex justify-between items-center border-t border-white/5 pt-6">
-                  <span className="text-secondary/40 text-[10px] uppercase font-black tracking-widest">К оплате</span>
-                  <span className="text-accent-gold font-black text-xl">{totalPrice}₽</span>
+
+                <div className="border-t border-white/5 pt-6 text-center">
+                  <span className="text-secondary/40 text-[10px] uppercase font-black tracking-widest block mb-4">Ваш телефон для связи</span>
+                  <input
+                    type="tel"
+                    placeholder="+7 (___) ___-__-__"
+                    className="admin-input w-full"
+                    value={clientPhone}
+                    onChange={(e) => setClientPhone(e.target.value)}
+                  />
+                  <p className="text-[8px] text-secondary/30 uppercase font-bold mt-2 tracking-widest">необходим для подтверждения записи</p>
+                </div>
+
+                <div className="border-t border-white/5 pt-6 text-center">
+                  <span className="text-secondary/40 text-[10px] uppercase font-black tracking-widest block mb-1">К оплате</span>
+                  <span className="text-accent-gold font-black text-2xl text-glow">{totalPrice}₽</span>
                 </div>
               </div>
             </div>
@@ -595,16 +611,10 @@ const App: React.FC = () => {
               <div className="space-y-6">
                 {userBookings.map(b => (
                   <div key={b.id} className="glass-card booking-card mb-6">
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <div className="text-2xl font-black text-white mb-1">{b.time}</div>
-                        <div className="status-badge py-1 px-3 text-[9px]">{format(parse(b.date, 'yyyy-MM-dd', new Date()), 'd MMMM', { locale: ru })}</div>
-                      </div>
-                      <div className="text-right">
-                        <div className="font-bold text-sm text-accent-gold mb-1">{b.masterName}</div>
-                        <div className="text-[10px] text-white/40 font-black uppercase tracking-widest">{b.total}₽</div>
-                      </div>
-                    </div>
+                    <div className="text-2xl font-black text-white mb-2">{b.time}</div>
+                    <div className="status-badge py-1 px-3 text-[9px] mb-4">{format(parse(b.date, 'yyyy-MM-dd', new Date()), 'd MMMM', { locale: ru })}</div>
+                    <div className="font-bold text-sm text-accent-gold mb-1">{b.masterName}</div>
+                    <div className="text-[10px] text-white/40 font-black uppercase tracking-widest">{b.total}₽</div>
                   </div>
                 ))}
               </div>

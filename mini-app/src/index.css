@@ -22,6 +22,8 @@
   box-sizing: border-box;
   -webkit-tap-highlight-color: transparent;
   font-family: 'Outfit', sans-serif;
+  text-align: center;
+  /* Global centering as requested */
 }
 
 body {
@@ -60,6 +62,13 @@ body {
   background: transparent;
 }
 
+.logo-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* Center logo items */
+}
+
 .logo-text {
   font-family: 'Playfair Display', serif;
   font-size: 20px;
@@ -72,6 +81,8 @@ body {
   text-transform: uppercase;
   line-height: 1;
   filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.4));
+  text-align: left;
+  /* Keep logo text left-aligned within its flex context if needed, but flex-col centers it */
 }
 
 .logo-subtitle {
@@ -82,6 +93,7 @@ body {
   margin-top: 4px;
   font-weight: 700;
   opacity: 0.8;
+  text-align: left;
 }
 
 .glass-card {
@@ -94,6 +106,9 @@ body {
   overflow: hidden;
   position: relative;
   transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .glass-card.selected {
@@ -105,9 +120,14 @@ body {
 
 .booking-card {
   padding: 24px !important;
-  padding-left: 32px !important;
   border-left: 6px solid var(--accent-gold) !important;
   border-radius: 22px !important;
+  align-items: center !important;
+  text-align: center !important;
+}
+
+.booking-card * {
+  text-align: center !important;
 }
 
 .service-grid {
@@ -131,6 +151,7 @@ body {
 
 .service-image-container {
   height: 145px;
+  width: 100%;
   position: relative;
   overflow: hidden;
 }
@@ -157,12 +178,14 @@ body {
   flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: center;
+  align-items: center;
   background: #14151a;
+  width: 100%;
 }
 
 .service-name {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 800;
   line-height: 1.2;
   color: var(--text-primary);
@@ -172,39 +195,42 @@ body {
   line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  text-align: center;
 }
 
 .service-price {
   color: var(--accent-gold);
   font-weight: 900;
-  font-size: 17px;
+  font-size: 16px;
   letter-spacing: -0.5px;
+  text-align: center;
 }
 
 .service-badge {
   position: absolute;
-  top: 12px;
-  left: 12px;
+  top: 10px;
+  left: 10px;
   background: rgba(0, 0, 0, 0.8);
-  padding: 6px;
-  border-radius: 12px;
-  font-size: 12px;
+  padding: 5px;
+  border-radius: 10px;
+  font-size: 10px;
   border: 1px solid var(--border-color);
   z-index: 5;
   backdrop-filter: blur(10px);
 }
 
 .header-btn {
-  width: 48px;
-  height: 48px;
+  width: 44px;
+  height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 18px;
+  border-radius: 16px;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
   color: var(--text-secondary);
   transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+  flex-shrink: 0;
 }
 
 .header-btn.active {
@@ -218,17 +244,20 @@ body {
   background: var(--gradient-gold);
   color: #000000;
   border-radius: 20px;
-  padding: 20px;
+  padding: 18px;
   font-weight: 900;
-  font-size: 14px;
+  font-size: 13px;
   text-transform: uppercase;
-  letter-spacing: 2px;
+  letter-spacing: 1.5px;
   transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
   box-shadow: var(--shadow-gold);
   border: none;
   width: 100%;
   position: relative;
   overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .btn-luxury::after {
@@ -254,7 +283,7 @@ body {
 }
 
 .btn-luxury:active {
-  transform: scale(0.95);
+  transform: scale(0.96);
   box-shadow: 0 5px 15px rgba(212, 175, 55, 0.2);
 }
 
@@ -269,13 +298,13 @@ body {
 }
 
 .date-item {
-  min-width: 72px;
-  height: 95px;
+  min-width: 70px;
+  height: 90px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  border-radius: 22px;
+  border-radius: 20px;
   background: #14151a;
   border: 1px solid rgba(255, 255, 255, 0.05);
   transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
@@ -285,14 +314,14 @@ body {
   background: var(--gradient-gold);
   color: #000;
   border-color: transparent;
-  transform: translateY(-6px);
+  transform: translateY(-4px);
   box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3);
 }
 
 .time-slot {
   background: #14151a;
-  border-radius: 18px;
-  padding: 16px;
+  border-radius: 16px;
+  padding: 14px;
   text-align: center;
   font-weight: 800;
   border: 1px solid rgba(255, 255, 255, 0.05);
@@ -311,9 +340,9 @@ body {
   bottom: 0;
   left: 0;
   right: 0;
-  padding: 24px 16px;
+  padding: 20px 16px;
   padding-bottom: calc(var(--safe-area-inset-bottom) + 10px);
-  background: linear-gradient(to top, var(--bg-color) 80%, transparent);
+  background: linear-gradient(to top, var(--bg-color) 85%, transparent);
   z-index: 50;
   max-width: 500px;
   margin: 0 auto;
@@ -321,14 +350,31 @@ body {
 
 .status-badge {
   background: rgba(212, 175, 55, 0.1);
-  padding: 8px 16px;
+  padding: 6px 14px;
   border-radius: 999px;
   border: 1px solid rgba(212, 175, 55, 0.3);
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 900;
   text-transform: uppercase;
   color: var(--accent-gold);
   letter-spacing: 1px;
+}
+
+.admin-input {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 14px;
+  color: white;
+  font-weight: 600;
+  outline: none;
+  text-align: center;
+}
+
+.admin-input:focus {
+  border-color: var(--accent-gold);
+  background: rgba(212, 175, 55, 0.05);
 }
 
 .scrollbar-hide {
@@ -342,4 +388,19 @@ body {
 
 .text-glow {
   text-shadow: 0 0 20px rgba(212, 175, 55, 0.6);
+}
+
+h2,
+h3,
+p,
+span,
+div {
+  text-align: center;
+}
+
+/* Specific alignments for labels to stay centered */
+label {
+  display: block;
+  text-align: center;
+  width: 100%;
 }

@@ -11,57 +11,84 @@
   "services": [
     {
       "id": 1,
-      "name": "TOP-LEVEL CUT",
+      "name": "Мужская стрижка",
       "price": 2500,
       "duration": 60,
       "icon": "✂️",
-      "description": "Premium grooming for the modern gentleman",
+      "description": "Классическая стрижка от профессионалов высокого уровня",
       "photo": "/images/services/style-cut.jpg"
     },
     {
       "id": 2,
-      "name": "BEARD SCULPTING",
+      "name": "Стрижка бороды",
       "price": 1500,
       "duration": 40,
       "icon": "🧔",
-      "description": "Precision trimming and luxury oil treatment",
+      "description": "Моделирование и уход за бородой с использованием премиальных масел",
       "photo": "/images/services/beard-trim.jpg"
     },
     {
       "id": 3,
-      "name": "ROYAL SHAVE",
+      "name": "Королевское бритье",
       "price": 2000,
       "duration": 50,
       "icon": "🪒",
-      "description": "Traditional hot towel and straight razor ritual",
+      "description": "Традиционный ритуал с горячим полотенцем и опасной бритвой",
       "photo": "/images/services/royal-shave.jpg"
     },
     {
       "id": 4,
-      "name": "PREMIUM COMBO",
+      "name": "Премиум комплекс",
       "price": 4500,
       "duration": 120,
       "icon": "💎",
-      "description": "The ultimate grooming experience",
+      "description": "Стрижка волос и бороды + SPA-уход",
       "photo": "/images/services/full-service.jpg"
     },
     {
       "id": 5,
-      "name": "FATHER & SON",
+      "name": "Отец + Сын",
       "price": 4000,
       "duration": 90,
       "icon": "👔",
-      "description": "Legacy and style shared across generations",
+      "description": "Совместная стрижка для создания семейного стиля",
       "photo": "/images/services/father-son-premium.jpg"
     },
     {
       "id": 6,
-      "name": "FACE DETOX",
+      "name": "Детокс лица",
       "price": 1800,
       "duration": 30,
       "icon": "🎭",
-      "description": "Deep cleaning and hydration",
+      "description": "Глубокое очищение и увлажнение кожи",
       "photo": "/images/services/face-detox.jpg"
+    },
+    {
+      "id": 7,
+      "name": "Стрижка машинкой",
+      "price": 1200,
+      "duration": 30,
+      "icon": "🔌",
+      "description": "Быстрая и четкая стрижка под одну или две насадки",
+      "photo": "/images/services/clipper.jpg"
+    },
+    {
+      "id": 8,
+      "name": "Черная маска",
+      "price": 1000,
+      "duration": 20,
+      "icon": "🌑",
+      "description": "Удаление черных точек и очищение пор",
+      "photo": "/images/services/mask.jpg"
+    },
+    {
+      "id": 9,
+      "name": "Камуфляж седины",
+      "price": 2200,
+      "duration": 45,
+      "icon": "🎨",
+      "description": "Естественное закрашивание седины волос или бороды",
+      "photo": "/images/services/color.jpg"
     }
   ],
   "masters": [
@@ -94,20 +121,7 @@
       "photo": "/images/masters/m4.jpg"
     }
   ],
-  "bookings": [
-    {
-      "id": 1,
-      "userId": "test",
-      "clientName": "Клиент",
-      "masterName": "Александр",
-      "services": [
-        "TOP-LEVEL CUT"
-      ],
-      "date": "2026-02-17",
-      "time": "10:00",
-      "total": 2500
-    }
-  ],
+  "bookings": [],
   "adminPin": "1234",
   "users": {}
 }
