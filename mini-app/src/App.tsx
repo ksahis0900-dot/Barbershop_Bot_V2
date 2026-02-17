@@ -146,13 +146,15 @@ const App: React.FC = () => {
     const firstName = WebApp.initDataUnsafe?.user?.first_name;
 
     return data.bookings.filter(b => {
-      const matchId = userId && b.userId === userId;
+      const matchId = userId && String(b.userId) === String(userId);
       const matchName = firstName && b.clientName === firstName;
-      return matchId || matchName;
+      // Fallback for browser testing if not in Telegram
+      const isTestMatch = !userId && !firstName && b.clientName === 'Клиент';
+      return matchId || matchName || isTestMatch;
     });
   }, [data.bookings]);
 
-  const APP_VERSION = "2.4.6-STABLE";
+  const APP_VERSION = "2.4.7-STABLE";
 
   const getRussianDayHeader = (day: Date) => {
     const days = ['вс', 'пн', 'вт', 'ср', 'чт', 'пт', 'сб'];
@@ -418,7 +420,7 @@ const App: React.FC = () => {
             <div className="flex gap-2 overflow-x-auto mb-10 scrollbar-hide py-2">
               {['bookings', 'services', 'masters', 'settings'].map(tab => (
                 <button key={tab} onClick={() => { setAdminTab(tab as any); setEditingItem(null); }} className={`px-5 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest whitespace-nowrap transition-all ${adminTab === tab ? 'bg-accent-gold text-black' : 'bg-white/5 text-secondary border border-white/10'}`}>
-                  {tab === 'bookings' ? 'ЗАПИСИ' : tab === 'services' ? 'УСЛУГИ' : tab === 'masters' ? 'МАСТЕРА' : 'ОПЦИИ'}
+                  {tab === 'bookings' ? 'ЗАПИСИ' : tab === 'services' ? 'УСЛУГИ' : tab === 'masters' ? 'МАСТЕРА' : 'НАСТРОЙКИ'}
                 </button>
               ))}
             </div>
