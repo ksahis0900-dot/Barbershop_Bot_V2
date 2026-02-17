@@ -11,7 +11,9 @@ import {
   Clock,
   Edit2,
   LogOut,
-  Calendar as CalendarIcon
+  Calendar as CalendarIcon,
+  ArrowLeft,
+  ArrowRight
 } from 'lucide-react';
 import {
   format,
@@ -199,7 +201,7 @@ const App: React.FC = () => {
     });
   }, [data.bookings]);
 
-  const APP_VERSION = "2.7.7-MOBILE-UI-FIX";
+  const APP_VERSION = "3.0.0-PREMIUM-UI";
 
 
   const totalPrice = selectedServices.reduce((sum, s) => sum + s.price, 0);
@@ -368,15 +370,15 @@ const App: React.FC = () => {
                       </div>
                     </div>
 
-                    {/* Sub-services (Hairstyles) Horizontal Scroll */}
+                    {/* Sub-services (Hairstyles) Grid - Convenient and visible */}
                     {s.subServices && isSelected && (
-                      <div className="mt-4 mb-2 animate-in fade-in slide-in-from-top-4 space-y-3">
+                      <div className="mt-4 mb-6 animate-in fade-in slide-in-from-top-4 space-y-4">
                         <div className="flex items-center gap-4 px-2">
                           <div className="h-[1px] bg-accent-gold/30 flex-1" />
-                          <h4 className="text-center text-accent-gold text-[9px] font-black uppercase tracking-[2px]">Выберите стиль</h4>
+                          <h4 className="text-center text-accent-gold text-[10px] font-black uppercase tracking-[3px]">Выберите стиль</h4>
                           <div className="h-[1px] bg-accent-gold/30 flex-1" />
                         </div>
-                        <div className="flex overflow-x-auto gap-3 pb-2 px-1 scrollbar-hide snap-x">
+                        <div className="style-grid">
                           {s.subServices.map((sub, idx) => {
                             const isStyleSelected = selectedStyles[s.id as number] === sub.name;
                             return (
@@ -386,18 +388,19 @@ const App: React.FC = () => {
                                   e.stopPropagation();
                                   setSelectedStyles(prev => ({ ...prev, [s.id as number]: sub.name }));
                                 }}
-                                className={`flex-shrink-0 w-24 snap-center glass-card p-0 overflow-hidden group aspect-[3/4] relative rounded-xl border transition-all cursor-pointer ${isStyleSelected ? 'border-accent-gold ring-1 ring-accent-gold shadow-[0_0_15px_rgba(212,175,55,0.3)]' : 'border-white/5 opacity-80 hover:opacity-100'}`}
+                                className={`style-card group ${isStyleSelected ? 'selected' : ''}`}
                               >
-                                <img src={sub.photo} className="w-full h-full object-cover transition-transform duration-700" loading="lazy" />
-                                <div className={`absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent ${isStyleSelected ? 'opacity-90' : 'opacity-60'}`} />
-                                <div className="absolute bottom-2 inset-x-0 text-center px-1">
-                                  <span className={`text-[8px] font-black uppercase tracking-widest drop-shadow-md block leading-tight ${isStyleSelected ? 'text-accent-gold' : 'text-white'}`}>{sub.name}</span>
-                                </div>
-                                {isStyleSelected && (
-                                  <div className="absolute top-1 right-1 bg-accent-gold rounded-full p-0.5">
-                                    <CheckCircle2 size={10} className="text-black" strokeWidth={3} />
+                                <div className="style-image-container">
+                                  <img src={sub.photo} className="style-image" loading="lazy" />
+                                  <div className="selection-overlay">
+                                    <div className="check-badge">
+                                      <CheckCircle2 size={18} strokeWidth={3} />
+                                    </div>
                                   </div>
-                                )}
+                                </div>
+                                <div className="style-info">
+                                  <span className="style-name">{sub.name}</span>
+                                </div>
                               </div>
                             );
                           })}
@@ -458,70 +461,87 @@ const App: React.FC = () => {
         )}
 
         {step === 'calendar' && (
-          <motion.div key="calendar" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-4">
-            <h2 className="text-xl font-bold mb-4">Запись</h2>
+          <motion.div key="calendar" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-6">
+            <h2 className="text-2xl font-black mb-8">Выберите время</h2>
 
-            <div className="mb-4">
-              <div className="glass-card p-2 sm:p-4">
-                <div className="flex items-center justify-between mb-2">
-                  <button onClick={handlePrevMonth} className="p-2 text-accent-gold hover:text-white transition-colors">◀</button>
-                  <span className="text-xs font-black uppercase tracking-widest text-accent-gold">
-                    {format(currentMonth, 'LLLL yyyy', { locale: ru })}
-                  </span>
-                  <button onClick={handleNextMonth} className="p-2 text-accent-gold hover:text-white transition-colors">▶</button>
+            <div className="calendar-container animate-in zoom-in-95 duration-500">
+              <div className="calendar-header">
+                <button onClick={handlePrevMonth} className="calendar-nav-btn">
+                  <ArrowLeft size={18} />
+                </button>
+                <div className="calendar-month-title">
+                  {format(currentMonth, 'LLLL yyyy', { locale: ru })}
                 </div>
+                <button onClick={handleNextMonth} className="calendar-nav-btn">
+                  <ArrowRight size={18} />
+                </button>
+              </div>
 
-                <div className="grid grid-cols-7 gap-1 text-center mb-1">
-                  {weekDays.map(d => (
-                    <div key={d} className="text-[9px] font-bold text-secondary/50 uppercase">{d}</div>
-                  ))}
-                </div>
+              <div className="calendar-weekdays">
+                {weekDays.map(d => (
+                  <div key={d} className="weekday-label">{d}</div>
+                ))}
+              </div>
 
-                <div className="grid grid-cols-7 gap-1">
-                  {calendarDays.map((day, idx) => {
-                    const isSelected = isSameDay(day, selectedDate);
-                    const isToday = isSameDay(day, new Date());
-                    const isCurrentMonth = isSameMonth(day, currentMonth);
-                    const isPast = isBefore(day, startOfDay(new Date()));
+              <div className="calendar-grid">
+                {calendarDays.map((day, idx) => {
+                  const isSelected = isSameDay(day, selectedDate);
+                  const isToday = isSameDay(day, new Date());
+                  const isCurrentMonth = isSameMonth(day, currentMonth);
+                  const isPast = isBefore(day, startOfDay(new Date()));
 
-                    return (
-                      <div
-                        key={idx}
-                        onClick={() => {
-                          if (!isPast) {
-                            setSelectedDate(day);
-                            setSelectedTime(null);
-                          }
-                        }}
-                        className={`
-                          aspect-square flex items-center justify-center rounded-lg text-xs font-bold transition-all
-                          ${!isCurrentMonth ? 'opacity-20' : ''}
-                          ${isPast ? 'opacity-10 cursor-not-allowed' : 'cursor-pointer'}
-                          ${isSelected ? 'bg-accent-gold text-black shadow-lg scale-105' : 'hover:bg-white/5'}
-                          ${isToday && !isSelected ? 'border border-accent-gold/50 text-accent-gold' : ''}
-                        `}
-                      >
-                        {format(day, 'd')}
-                      </div>
-                    );
-                  })}
-                </div>
+                  return (
+                    <div
+                      key={idx}
+                      onClick={() => {
+                        if (!isPast && isCurrentMonth) {
+                          setSelectedDate(day);
+                          setSelectedTime(null);
+                        }
+                      }}
+                      className={`
+                        calendar-day
+                        ${!isCurrentMonth ? 'day-outside' : ''}
+                        ${isPast ? 'day-past' : ''}
+                        ${isToday && isCurrentMonth ? 'day-today' : ''}
+                        ${isSelected ? 'day-selected' : ''}
+                      `}
+                    >
+                      {format(day, 'd')}
+                    </div>
+                  );
+                })}
+              </div>
+
+              <div className="mt-8 flex justify-center">
+                <button
+                  onClick={() => setCurrentMonth(startOfMonth(new Date()))}
+                  className="px-6 py-2.5 bg-accent-gold/5 border border-accent-gold/20 rounded-full text-[10px] font-black uppercase tracking-[2px] text-accent-gold active:scale-95 transition-all"
+                >
+                  Вернуться к сегодня
+                </button>
               </div>
             </div>
 
             {selectedDate && (
-              <div className="animate-in slide-in-from-bottom-4 fade-in duration-300">
-                <div className="mb-3 mt-6 flex items-center justify-between text-[10px] font-bold uppercase tracking-widest text-secondary/60">
-                  <span>2. Выберите время</span>
-                  <span className="opacity-50">{format(selectedDate, 'd MMMM', { locale: ru })}</span>
+              <div className="animate-in slide-in-from-bottom-6 duration-500">
+                <div className="flex items-center justify-between mb-4 px-2">
+                  <span className="text-[10px] font-black uppercase tracking-[3px] text-accent-gold">Доступные слоты</span>
+                  <span className="text-[10px] font-medium text-secondary/40">{format(selectedDate, 'd MMMM', { locale: ru })}</span>
                 </div>
                 <div className="time-grid">
                   {availableTimes.length > 0 ? (
                     availableTimes.map(t => (
-                      <div key={t} onClick={() => setSelectedTime(t)} className={`time-slot text-xs py-2 ${selectedTime === t ? 'selected' : ''}`}>{t}</div>
+                      <div
+                        key={t}
+                        onClick={() => setSelectedTime(t)}
+                        className={`time-slot ${selectedTime === t ? 'selected' : ''}`}
+                      >
+                        {t}
+                      </div>
                     ))
                   ) : (
-                    <div className="col-span-4 py-8 text-center text-secondary/30 border-2 border-dashed border-white/5 rounded-xl font-bold text-[10px] uppercase tracking-widest">Мест нет</div>
+                    <div className="col-span-4 py-12 glass-card border-dashed opacity-40 text-[10px] uppercase font-bold tracking-[4px]">Мест нет</div>
                   )}
                 </div>
               </div>
@@ -529,10 +549,16 @@ const App: React.FC = () => {
 
             {selectedTime && (
               <div className="sticky-footer">
-                <button onClick={() => setStep('confirmation')} className="btn-luxury py-4 px-6 text-xs tracking-wider">Продолжить</button>
+                <button onClick={() => setStep('confirmation')} className="btn-luxury">Продолжить</button>
               </div>
             )}
-            <button onClick={() => setStep('masters')} className="mt-8 w-full text-secondary/40 text-[9px] font-black uppercase tracking-[3px] text-center">← назад к выбору мастера</button>
+
+            <button
+              onClick={() => setStep('masters')}
+              className="mt-12 w-full text-secondary/30 text-[9px] font-black uppercase tracking-[4px] hover:text-accent-gold transition-colors flex items-center justify-center gap-2"
+            >
+              <ArrowLeft size={12} /> Назад к выбору мастера
+            </button>
           </motion.div>
         )}
 
