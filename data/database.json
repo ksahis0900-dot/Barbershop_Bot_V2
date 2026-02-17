@@ -20,43 +20,43 @@
       "subServices": [
         {
           "name": "Undercut (Андеркат)",
-          "photo": "/images/masters/m1.jpg"
+          "photo": "/images/hairstyles/undercut-haircut.jpg"
         },
         {
           "name": "Fade (Фейд)",
-          "photo": "/images/services/clipper.jpg"
+          "photo": "/images/hairstyles/fade-haircut.jpg"
         },
         {
           "name": "Pompadour (Помпадур)",
-          "photo": "/images/masters/m2.jpg"
+          "photo": "/images/hairstyles/pompadour-haircut.jpg"
         },
         {
           "name": "Quiff (Квифф)",
-          "photo": "/images/services/style-cut.jpg"
+          "photo": "/images/hairstyles/quiff-haircut.jpg"
         },
         {
           "name": "Slicked Back (Зачес)",
-          "photo": "/images/masters/m3.jpg"
+          "photo": "/images/hairstyles/slicked-back.jpg"
         },
         {
           "name": "Buzz Cut (Бокс)",
-          "photo": "/images/services/royal-shave.jpg"
+          "photo": "/images/hairstyles/buzz-cut.jpg"
         },
         {
           "name": "Side Part (Пробор)",
-          "photo": "/images/services/father-son-premium.jpg"
+          "photo": "/images/hairstyles/side-part.jpg"
         },
         {
           "name": "Crop (Кроп)",
-          "photo": "/images/masters/m4.jpg"
+          "photo": "/images/hairstyles/crop.jpg"
         },
         {
           "name": "Curtains (Шторы)",
-          "photo": "/images/services/beard-trim.jpg"
+          "photo": "/images/hairstyles/curtains.jpg"
         },
         {
           "name": "Mullet (Маллет)",
-          "photo": "/images/services/full-service.jpg"
+          "photo": "/images/hairstyles/mullet.jpg"
         }
       ]
     },
@@ -104,15 +104,6 @@
       "icon": "🔌",
       "description": "Стрижка одной или двумя насадками без использования ножниц. Быстро и практично.",
       "photo": "/images/services/clipper.jpg"
-    },
-    {
-      "id": 8,
-      "name": "Черная маска",
-      "price": 1000,
-      "duration": 20,
-      "icon": "🌑",
-      "description": "Очищающая маска (Black Mask) для удаления черных точек и глубокого очищения пор.",
-      "photo": "/images/services/mask.jpg"
     },
     {
       "id": 9,

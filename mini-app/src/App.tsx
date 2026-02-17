@@ -72,6 +72,7 @@ const App: React.FC = () => {
   const [selectedMaster, setSelectedMaster] = useState<Master | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date>(addDays(new Date(), 0));
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
+  const [selectedStyles, setSelectedStyles] = useState<{ [key: number]: string }>({});
   const [clientPhone, setClientPhone] = useState('');
 
   // Admin State
@@ -170,7 +171,7 @@ const App: React.FC = () => {
     });
   }, [data.bookings]);
 
-  const APP_VERSION = "2.7.3-GOLD";
+  const APP_VERSION = "2.7.4-FINAL-FIX";
 
   const getRussianDayHeader = (day: Date) => {
     const days = ['вс', 'пн', 'вт', 'ср', 'чт', 'пт', 'сб'];
@@ -211,7 +212,10 @@ const App: React.FC = () => {
     const bookingData = {
       id: Date.now(),
       userId: WebApp.initDataUnsafe?.user?.id,
-      services: selectedServices,
+      services: selectedServices.map(s => ({
+        ...s,
+        selectedStyle: selectedStyles[s.id as number] || null
+      })),
       masterId: selectedMaster.id,
       masterName: selectedMaster.name,
       date: format(selectedDate, 'yyyy-MM-dd'),
@@ -345,16 +349,31 @@ const App: React.FC = () => {
                           <h4 className="text-center text-accent-gold text-[9px] font-black uppercase tracking-[2px]">Выберите стиль</h4>
                           <div className="h-[1px] bg-accent-gold/30 flex-1" />
                         </div>
-                        <div className="grid grid-cols-2 gap-3 px-1">
-                          {s.subServices.map((sub, idx) => (
-                            <div key={idx} className="glass-card p-0 overflow-hidden group aspect-[4/5] relative rounded-xl border border-white/5">
-                              <img src={sub.photo} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
-                              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent opacity-80" />
-                              <div className="absolute bottom-3 inset-x-0 text-center px-1">
-                                <span className="text-[9px] font-black text-white uppercase tracking-widest drop-shadow-md block leading-tight">{sub.name}</span>
+                        <div className="grid grid-cols-3 gap-2 px-1">
+                          {s.subServices.map((sub, idx) => {
+                            const isStyleSelected = selectedStyles[s.id as number] === sub.name;
+                            return (
+                              <div
+                                key={idx}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setSelectedStyles(prev => ({ ...prev, [s.id as number]: sub.name }));
+                                }}
+                                className={`glass-card p-0 overflow-hidden group aspect-[3/4] relative rounded-xl border transition-all cursor-pointer ${isStyleSelected ? 'border-accent-gold ring-1 ring-accent-gold shadow-[0_0_15px_rgba(212,175,55,0.3)]' : 'border-white/5 opacity-80 hover:opacity-100'}`}
+                              >
+                                <img src={sub.photo} className="w-full h-full object-cover transition-transform duration-700" />
+                                <div className={`absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent ${isStyleSelected ? 'opacity-90' : 'opacity-60'}`} />
+                                <div className="absolute bottom-2 inset-x-0 text-center px-1">
+                                  <span className={`text-[8px] font-black uppercase tracking-widest drop-shadow-md block leading-tight ${isStyleSelected ? 'text-accent-gold' : 'text-white'}`}>{sub.name}</span>
+                                </div>
+                                {isStyleSelected && (
+                                  <div className="absolute top-1 right-1 bg-accent-gold rounded-full p-0.5">
+                                    <CheckCircle2 size={10} className="text-black" strokeWidth={3} />
+                                  </div>
+                                )}
                               </div>
-                            </div>
-                          ))}
+                            );
+                          })}
                         </div>
                       </div>
                     )}
@@ -414,7 +433,12 @@ const App: React.FC = () => {
         {step === 'calendar' && (
           <motion.div key="calendar" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-6">
             <h2 className="text-2xl font-bold mb-8">Запись</h2>
-            <div className="date-scroller scrollbar-hide">
+            <h2 className="text-2xl font-bold mb-6">Запись</h2>
+
+            <div className="mb-2 flex items-center justify-between text-xs font-bold uppercase tracking-widest text-secondary/60">
+              <span>1. Выберите дату</span>
+            </div>
+            <div className="date-scroller scrollbar-hide mb-8">
               {[...Array(21)].map((_, i) => {
                 const day = addDays(new Date(), i);
                 const active = isSameDay(day, selectedDate);
@@ -428,6 +452,10 @@ const App: React.FC = () => {
             </div>
             <div className="bg-accent-gold/5 border border-accent-gold/20 rounded-2xl py-6 px-4 text-accent-gold text-sm font-black uppercase tracking-[2px] my-10 text-center shadow-lg backdrop-blur-md">
               {format(selectedDate, 'd MMMM yyyy г.', { locale: ru })}
+            </div>
+            <div className="mb-4 mt-8 flex items-center justify-between text-xs font-bold uppercase tracking-widest text-secondary/60">
+              <span>2. Выберите время</span>
+              <span className="text-[10px] opacity-50">{format(selectedDate, 'dd.MM')}</span>
             </div>
             <div className="time-grid">
               {availableTimes.length > 0 ? (
