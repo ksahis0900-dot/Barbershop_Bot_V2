@@ -201,7 +201,7 @@ const App: React.FC = () => {
     });
   }, [data.bookings]);
 
-  const APP_VERSION = "3.0.0-PREMIUM-UI";
+  const APP_VERSION = "3.1.0-PREMIUM-UI";
 
 
   const totalPrice = selectedServices.reduce((sum, s) => sum + s.price, 0);
