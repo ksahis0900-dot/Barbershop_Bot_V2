@@ -59,7 +59,7 @@ body {
 }
 
 .logo-subtitle {
-  font-size: clamp(7px, 2vw, 9px);
+  font-size: clamp(8px, 2.5vw, 10px);
   letter-spacing: 4px;
   color: var(--accent-gold);
   text-transform: uppercase;

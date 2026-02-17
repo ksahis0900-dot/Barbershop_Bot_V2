@@ -154,7 +154,7 @@ const App: React.FC = () => {
     });
   }, [data.bookings]);
 
-  const APP_VERSION = "2.4.4-STABLE";
+  const APP_VERSION = "2.4.5-STABLE";
 
   const getRussianDayHeader = (day: Date) => {
     const days = ['вс', 'пн', 'вт', 'ср', 'чт', 'пт', 'сб'];
@@ -338,7 +338,7 @@ const App: React.FC = () => {
                 const active = isSameDay(day, selectedDate);
                 return (
                   <div key={i} onClick={() => { setSelectedDate(day); setSelectedTime(null); }} className={`date-item ${active ? 'active' : ''}`}>
-                    <span className="text-[9px] font-black uppercase tracking-widest opacity-40 mb-1">{getRussianDayHeader(day)}</span>
+                    <span className="text-[10px] font-black uppercase tracking-widest opacity-40 mb-1">{getRussianDayHeader(day)}</span>
                     <span className="text-xl font-black">{format(day, 'd')}</span>
                   </div>
                 );
@@ -372,7 +372,7 @@ const App: React.FC = () => {
                 <CalendarIcon size={24} className="text-black" />
               </div>
               <h2 className="text-3xl font-black mb-2 text-glow">{selectedTime}</h2>
-              <p className="text-secondary font-bold uppercase tracking-widest text-[9px] mb-8">{format(selectedDate, 'EEEE, d MMMM yyyy года', { locale: ru })}</p>
+              <p className="text-secondary font-bold uppercase tracking-widest text-[10px] mb-8">{format(selectedDate, 'EEEE, d MMMM yyyy года', { locale: ru })}</p>
               <div className="space-y-4 text-left border-t border-white/5 pt-6">
                 <div className="flex justify-between items-center text-[10px] uppercase font-bold tracking-widest">
                   <span className="text-secondary">Мастер</span>
@@ -419,7 +419,7 @@ const App: React.FC = () => {
           <motion.div key="admin" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-6">
             <div className="flex gap-2 overflow-x-auto mb-10 scrollbar-hide py-2">
               {['bookings', 'services', 'masters', 'settings'].map(tab => (
-                <button key={tab} onClick={() => { setAdminTab(tab as any); setEditingItem(null); }} className={`px-5 py-3 rounded-xl text-[9px] font-black uppercase tracking-widest whitespace-nowrap transition-all ${adminTab === tab ? 'bg-accent-gold text-black' : 'bg-white/5 text-secondary border border-white/10'}`}>
+                <button key={tab} onClick={() => { setAdminTab(tab as any); setEditingItem(null); }} className={`px-5 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest whitespace-nowrap transition-all ${adminTab === tab ? 'bg-accent-gold text-black' : 'bg-white/5 text-secondary border border-white/10'}`}>
                   {tab === 'bookings' ? 'ЗАПИСИ' : tab === 'services' ? 'УСЛУГИ' : tab === 'masters' ? 'МАСТЕРА' : 'ОПЦИИ'}
                 </button>
               ))}
@@ -432,14 +432,14 @@ const App: React.FC = () => {
                     <div className="flex justify-between items-start mb-3">
                       <div>
                         <div className="text-xl font-black text-accent-gold">{b.time}</div>
-                        <div className="text-[9px] font-bold text-secondary uppercase">{b.date}</div>
+                        <div className="text-[10px] font-bold text-secondary uppercase">{b.date}</div>
                       </div>
                       <div className="text-right">
                         <div className="font-bold text-sm">{b.clientName}</div>
                         <div className="text-[8px] opacity-40 uppercase font-black">{b.masterName}</div>
                       </div>
                     </div>
-                    <div className="text-[9px] opacity-50 border-t border-white/5 pt-2">
+                    <div className="text-[10px] opacity-50 border-t border-white/5 pt-2">
                       {b.services?.map((s: any, i) => <span key={i}>{typeof s === 'string' ? s : s.name}{i < b.services.length - 1 ? ', ' : ''}</span>)}
                     </div>
                   </div>
@@ -497,11 +497,11 @@ const App: React.FC = () => {
                     <div className="flex justify-between items-center">
                       <div>
                         <div className="text-xl font-black text-accent-gold">{b.time}</div>
-                        <div className="text-[9px] font-bold text-secondary uppercase">{format(parse(b.date, 'yyyy-MM-dd', new Date()), 'd MMMM', { locale: ru })}</div>
+                        <div className="text-[10px] font-bold text-secondary uppercase">{format(parse(b.date, 'yyyy-MM-dd', new Date()), 'd MMMM', { locale: ru })}</div>
                       </div>
                       <div className="text-right">
                         <div className="font-bold text-sm tracking-tight">{b.masterName}</div>
-                        <div className="text-[9px] text-accent-gold font-bold">{b.total}₽</div>
+                        <div className="text-[10px] text-accent-gold font-bold">{b.total}₽</div>
                       </div>
                     </div>
                   </div>
