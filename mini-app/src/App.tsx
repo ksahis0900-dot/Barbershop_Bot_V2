@@ -320,11 +320,45 @@ const App: React.FC = () => {
       <AnimatePresence mode="wait">
         {step === 'services' && (
           <motion.div key="services" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-6">
-            <div className="flex items-center justify-between mb-8">
-              <h2 className="text-2xl font-bold">Услуги</h2>
-              <div className="status-badge flex items-center gap-2">
-                <Clock size={12} /> {totalDuration} мин
+            <div className="flex flex-col mb-8">
+              <div className="flex items-center justify-between mb-2">
+                <h2 className="text-2xl font-black uppercase tracking-tighter">Услуги</h2>
+                <div className="status-badge flex items-center gap-2">
+                  <Clock size={12} /> {totalDuration} мин
+                </div>
               </div>
+
+              <AnimatePresence>
+                {selectedServices.length > 0 && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    className="overflow-hidden"
+                  >
+                    <div className="bg-accent-gold/5 border border-dashed border-accent-gold/30 rounded-2xl p-4 mt-2 mb-4">
+                      <div className="flex items-center gap-2 mb-3 text-accent-gold font-black text-[10px] uppercase tracking-widest">
+                        <CheckCircle2 size={12} /> Выбрано сегодня:
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        {selectedServices.map(s => (
+                          <span key={s.id} className="bg-accent-gold text-black text-[9px] font-black px-3 py-1.5 rounded-full flex items-center gap-2 shadow-lg">
+                            {s.name}
+                            <X size={10} strokeWidth={4} onClick={(e) => {
+                              e.stopPropagation();
+                              setSelectedServices(selectedServices.filter(x => x.id !== s.id));
+                            }} />
+                          </span>
+                        ))}
+                      </div>
+                      <div className="mt-4 flex justify-between items-center border-t border-accent-gold/10 pt-3">
+                        <span className="text-[10px] text-white/40 font-bold uppercase tracking-widest">Итого к оплате:</span>
+                        <span className="text-accent-gold font-black text-lg text-glow">{totalPrice}₽</span>
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
 
             <div className="service-grid">
@@ -335,10 +369,18 @@ const App: React.FC = () => {
                     <div
                       onClick={() => {
                         const exists = selectedServices.find(x => x.id === s.id);
-                        if (exists) setSelectedServices(selectedServices.filter(x => x.id !== s.id));
+                        if (exists) {
+                          setSelectedServices(selectedServices.filter(x => x.id !== s.id));
+                          // Remove style if service removed
+                          setSelectedStyles(prev => {
+                            const next = { ...prev };
+                            delete next[s.id as number];
+                            return next;
+                          });
+                        }
                         else setSelectedServices([...selectedServices, s]);
                       }}
-                      className={`glass-card service-card relative group transition-all cursor-pointer overflow-hidden ${isSelected ? 'border-accent-gold' : 'border-white/5'}`}
+                      className={`glass-card service-card relative group transition-all cursor-pointer overflow-hidden ${isSelected ? 'selected' : 'border-white/5'}`}
                     >
                       <div className="service-image-container">
                         <img
