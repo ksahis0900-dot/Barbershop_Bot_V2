@@ -170,7 +170,7 @@ const App: React.FC = () => {
     });
   }, [data.bookings]);
 
-  const APP_VERSION = "2.7.1-POLISH";
+  const APP_VERSION = "2.7.3-GOLD";
 
   const getRussianDayHeader = (day: Date) => {
     const days = ['вс', 'пн', 'вт', 'ср', 'чт', 'пт', 'сб'];
